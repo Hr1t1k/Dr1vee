@@ -1,0 +1,13 @@
+*{
+    font-family: "Google Sans Text",
+        "Google Sans",
+        Roboto,
+        Arial,
+        sans-serif !important;
+}
+
+p{
+    font-size: 14px;
+    padding:0px;
+    margin: 0 !important;
+}

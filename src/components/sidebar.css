@@ -1,0 +1,36 @@
+.active{
+    background-color: rgb(154, 212, 245);
+    color:rgb(0, 29, 53);
+    text-decoration: none;
+    width: 218px !important;
+    padding:5px 10px
+}
+.inactive{
+    width:218px !important;
+    padding: 5px 10px;
+    text-decoration: none;
+    color: rgb(0, 29, 53);
+}
+.inactive:hover{
+    background-color: darkgray;
+}
+.NewBtn{
+    background-color: white;
+    border: 0;
+}
+.NewBtn:hover{
+    background-color: rgb(237, 242, 252);
+}
+.storageBtn{
+    color:rgb(17, 85, 204) !important;
+}
+.storageBtn:hover{
+    background-color: rgb(237, 242, 252)!important;
+}
+.sidebar{
+    /* width: 238px; */
+    height:alc(100vh - 63.6px);
+}
+.sidebarItems{
+    color:"red!important"
+}
