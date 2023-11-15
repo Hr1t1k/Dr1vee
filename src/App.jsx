@@ -5,7 +5,7 @@ import ThemeToggler from "./components/ThemeToggler";
 
 function App() {
   return (
-    <div className="p-0 bg-body-secondary">
+    <div className="p-0 body">
       <HeaderDrive />
       <div className="d-inline-flex">
         <Sidebar />

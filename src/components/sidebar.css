@@ -29,7 +29,7 @@
 }
 .sidebar{
     /* width: 238px; */
-    height:alc(100vh - 63.6px);
+    height:calc(100vh - 65px);
 }
 .sidebarItems{
     color:"red!important"
