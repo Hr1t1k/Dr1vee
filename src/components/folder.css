@@ -7,6 +7,7 @@
 }
 .three-dots{
     border-radius: 50% !important;
+    cursor: pointer;
 }
 .three-dots:hover{
     background-color:rgba(163, 165, 168, 0.8) !important;

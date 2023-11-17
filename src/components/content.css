@@ -2,13 +2,13 @@
     .content-body {
         width:100vw !important;
          margin:0px 10px !important; 
-        height: calc(100vh - 75.05px);
+        height: calc(100vh - 70.05px)!important;
         /* border-radius: 0px !important; */
     }
 }
 .content-body{
     width: calc(100vw - 270px);
-    height: calc(100vh - 75.05px);
+    height: calc(100vh - 80.05px);
     border-radius: 15px !important;
     background-color: white;
     

@@ -2,6 +2,7 @@ import React from "react";
 import { NavLink } from "react-router-dom";
 import "./sidebar.css";
 import CompanyLogo from "./CompanyLogo";
+import NewBtn from "./NewBtn";
 export default () => {
   return (
     <>
@@ -23,47 +24,7 @@ export default () => {
               aria-label="Close"
             ></button>
           </div>
-          <div class="dropdown">
-            <button
-              type="button"
-              role="button"
-              className="NewBtn p-3 m-2 ms-0 mb-3 rounded-4 shadow-sm d-sm-inline-flex gap-2 d-none"
-              data-bs-toggle="dropdown"
-              aria-expanded="false"
-              aria-disabled="false"
-              aria-haspopup="true"
-              data-bs-offset="-10,-60"
-            >
-              <svg
-                class="Q6yead QJZfhe "
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                focusable="false"
-              >
-                <path d="M20 13h-7v7h-2v-7H4v-2h7V4h2v7h7v2z"></path>
-              </svg>
-              <p className="p-0 mx-1">New</p>
-            </button>
-            <ul class="dropdown-menu">
-              <li>
-                <a class="dropdown-item" href="#">
-                  New Folder
-                </a>
-              </li>
-              <li>
-                <a class="dropdown-item" href="#">
-                  Folder Upload
-                </a>
-              </li>
-              <li>
-                <a class="dropdown-item" href="#">
-                  File Upload
-                </a>
-              </li>
-            </ul>
-          </div>
-
+          <NewBtn />
           <div className="offcanvas-body p-0 overflow-y-auto">
             <nav className=" nav flex-column" style={{ width: "218px" }}>
               <NavLink
