@@ -1,0 +1,13 @@
+.folder-box{
+    height: 48px !important;
+    background-color:rgb(242, 246, 252);
+}
+.folder-box:hover{
+    background-color: #e8eaed;
+}
+.three-dots{
+    border-radius: 50% !important;
+}
+.three-dots:hover{
+    background-color:rgba(163, 165, 168, 0.8) !important;
+}

@@ -17,6 +17,7 @@
 .NewBtn{
     background-color: white;
     border: 0;
+    box-shadow: 100px 100px 100px #888888 !important;
 }
 .NewBtn:hover{
     background-color: rgb(237, 242, 252);
@@ -29,7 +30,11 @@
 }
 .sidebar{
     /* width: 238px; */
-    height:calc(100vh - 65px);
+    height:calc(100vh - 65.05px);
+    max-height:calc(100vh - 65.05px) ;
+    padding-top: 0px;
+    padding-bottom: 0px;
+    
 }
 .sidebarItems{
     color:"red!important"

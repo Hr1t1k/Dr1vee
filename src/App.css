@@ -1,10 +1,51 @@
+.logo {
+    min-width: 238px ;
+}
 @media (max-width: 767.98px) {
-    .content {
-        width:95vw !important;
+    .logo{
+        min-width: 0px;
+        padding-right: 10px !important;
     }
 }
+
 .body{
-    /* background-color: rgb(247, 249, 252); */
-    background-color: red;
+    background-color: rgb(247, 249, 252);
+    max-height: 100vh;
+    overflow: hidden;
 }
 
+*::-webkit-scrollbar {
+    height: 16px;
+    overflow: visible;
+    width: 8px;
+}
+
+*::-webkit-scrollbar-track {
+    background-clip: padding-box;
+    border: solid transparent;
+    border-width: 0 0 0 4px;
+}
+
+*::-webkit-scrollbar-thumb {
+    background-color: rgba(0, 0, 0, .2);
+    background-clip: padding-box;
+    border: solid transparent;
+    border-width: 1px 1px 1px 1px;
+    min-height: 28px;
+    padding: 100px 0 0;
+    -webkit-box-shadow: inset 1px 1px 0 rgba(0, 0, 0, .1), inset 0 -1px 0 rgba(0, 0, 0, .07);
+    box-shadow: inset 1px 1px 0 rgba(0, 0, 0, .1), inset 0 -1px 0 rgba(0, 0, 0, .07);
+}
+*::-webkit-scrollbar-button {
+    height: 0;
+    width: 0;
+}
+*::-webkit-scrollbar-corner {
+    background: transparent;
+}
+@media  (max-width: 576px) {
+    
+    ::-webkit-scrollbar {
+        -webkit-appearance: none !important;
+    }
+}

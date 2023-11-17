@@ -11,7 +11,7 @@ export default () => {
         <HeaderMinimizedRight />
         <div
           className="container-fluid d-grid gap-0 align-items-center"
-          style={{ gridTemplateColumns: "238px auto" }}
+          style={{ gridTemplateColumns: "1fr 5fr" }}
         >
           <CompanyLogo />
           <div className="d-flex align-items-center justify-content-between">

@@ -26,17 +26,16 @@ export default () => {
           aria-label="Toggle navigation"
         >
           <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="16"
-            height="16"
+            class="a-s-fa-Ha-pa c-qd"
+            width="24px"
+            height="24px"
+            viewBox="0 0 24 24"
             fill="black"
-            class="bi bi-list"
-            viewBox="0 0 16 16"
           >
-            <path
-              fill-rule="evenodd"
-              d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z"
-            />
+            <g>
+              <rect fill="none" width="24" height="24"></rect>
+              <path d="M3,18h18v-2H3V18z M3,13h18v-2H3V13z M3,6v2h18V6H3z"></path>
+            </g>
           </svg>
         </button>
       </li>

@@ -1,10 +1,10 @@
 import React from "react";
 export default () => {
   return (
-    <div className="flex-shrink-0 dropdown">
+    <div className="flex-shrink-0 dropdown me-2">
       <a
         href="#"
-        className="d-block link-body-emphasis text-decoration-none dropdown-toggle"
+        className="d-block link-body-emphasis text-decoration-none "
         data-bs-toggle="dropdown"
         aria-expanded="false"
       >
