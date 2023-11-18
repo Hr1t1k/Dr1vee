@@ -3,7 +3,7 @@ export default () => {
   return (
     <>
       <div
-        className="position-absolute d-flex align-items-center three-dots end-0 me-2 p-1 "
+        className=" d-flex align-items-center three-dots p-1"
         data-bs-toggle="dropdown"
         aria-expanded="false"
       >

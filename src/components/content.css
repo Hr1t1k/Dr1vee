@@ -1,75 +1,72 @@
-@media (max-width: 767.98px) {
-    .content-body {
+@media (max-width:992px) {
+    .content-box {
         width:100vw !important;
          margin:0px 10px !important; 
         height: calc(100vh - 70.05px)!important;
         /* border-radius: 0px !important; */
     }
 }
-.content-body{
+.content-box{
     width: calc(100vw - 270px);
     height: calc(100vh - 80.05px);
     border-radius: 15px !important;
     background-color: white;
     
 }
+.content-body{
+    height: calc(100% - 53.8px);
+}
 @media (min-width:1400px){
     .content{
         grid-template-columns: 1fr 1fr 1fr 1fr 1fr     
     }
+        .list-header {
+            grid-template-columns: 5fr 2fr 2fr 1fr 1fr;
+        }
 }
 @media (min-width:1200px) and (max-width:1400px) {
     .content {
         grid-template-columns: 1fr 1fr 1fr 1fr 
     }
+        .list-header {
+            grid-template-columns: 5fr 2fr 2fr 1fr 1fr;
+        }
 }
 @media (min-width:992px) and (max-width:1199px) {
     .content {
         grid-template-columns: 1fr 1fr 1fr
+    }
+    .list-header {
+        grid-template-columns: 5fr 2fr 2fr 1fr 1fr;
     }
 }
 @media (max-width:991px) {
     .content {
         grid-template-columns: 1fr 1fr 
     }
+        
 }
-/* @media (max-width:) */
-.file-box {
-    /* border-radius: 15px !important; */
-    position: relative;
-    /* desired width */
-    margin: 5px;
+@media (min-width:768px) and (max-width:992px){
+    .list-header {
+            grid-template-columns: 5fr 2fr 2fr 1fr 1fr;
+        }
+}
+@media (max-width:768px){
+    .list-header {
+            grid-template-columns: 5fr  1fr ;
+        }
+}
+.layout{
+    border-radius: 50% !important;
+    cursor: pointer;
+}
+.layout:hover{
+    background-color: rgb(242, 246, 252)!important;
+}
+.no-content{
+    height:60%
+}
 
-}
-
-.file-box:before {
-    content: "";
-    display: block;
-    padding-top: 100%;
-    /* border-radius: 15px !important; */
-    /* initial ratio of 1:1*/
-}
-
-
-
-.file-content {
-    position: absolute;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    right: 0;
-    /* background: #333; */
-    background-color: rgb(242, 246, 252);
-    
-}
-.file-content:hover{
-    background-color: #e8eaed;
-}
-.file-header{
-    height: 48px;
-}
-.file-body{
-    height: calc(100% - 48px);
-    background-color:white;
-    /* border-radius: 15px; */
+.list-header{
+    height: 48px !important;
 }

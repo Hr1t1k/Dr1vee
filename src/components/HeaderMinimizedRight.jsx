@@ -1,7 +1,7 @@
 import React from "react";
 export default () => {
   return (
-    <ul className="navbar-nav flex-row d-md-none">
+    <ul className="navbar-nav flex-row d-lg-none">
       {/* <li className="nav-item text-nowrap">
         <button
           className="nav-link px-3 text-white"

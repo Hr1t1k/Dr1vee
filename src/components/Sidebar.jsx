@@ -6,13 +6,13 @@ import NewBtn from "./NewBtn";
 export default () => {
   return (
     <>
-      <div className="sidebar p-0 ms-md-3    overflow-x-hidden">
+      <div className="sidebar overflow-x-hidden">
         <div
-          className="offcanvas-md offcanvas-start p-lg-0 p-2"
+          className="offcanvas-lg offcanvas-start p-lg-0 p-2 p-0 ps-md-3 ps-lg-3 "
           tabIndex="-1"
           id="sidebarMenu"
           aria-labelledby="sidebarMenuLabel"
-          style={{ width: "238px" }}
+          style={{ width: "245px" }}
         >
           <div className="offcanvas-header">
             <CompanyLogo />
@@ -36,13 +36,13 @@ export default () => {
                     "gap-3",
                     "rounded-4",
                     "w-100",
-                    isActive ? "active" : "",
+                    isActive ? "active" : "inactive",
                     isPending ? "pending" : "",
                     isTransitioning ? "transitioning" : "",
                   ].join(" ")
                 }
-                style={{ width: "238px" }}
-                to="#"
+                // style={{ width: "238px" }}
+                to="/my-drive"
               >
                 <svg
                   class="a-s-fa-Ha-pa c-qd"
@@ -71,7 +71,7 @@ export default () => {
                     isTransitioning ? "transitioning" : "",
                   ].join(" ")
                 }
-                to="/name"
+                to="/shared-drives"
               >
                 <svg
                   width="20px"
@@ -108,7 +108,7 @@ export default () => {
                     isTransitioning ? "transitioning" : "",
                   ].join(" ")
                 }
-                to="/name"
+                to="/computers"
               >
                 <svg
                   class=" c-qd"
@@ -138,7 +138,7 @@ export default () => {
                     isTransitioning ? "transitioning" : "",
                   ].join(" ")
                 }
-                to="/name"
+                to="/shared-with-me"
               >
                 <svg
                   class=" c-qd"
@@ -173,7 +173,7 @@ export default () => {
                     isTransitioning ? "transitioning" : "",
                   ].join(" ")
                 }
-                to="/name"
+                to="/recent"
               >
                 <svg
                   class="c-qd "
@@ -207,7 +207,7 @@ export default () => {
                     isTransitioning ? "transitioning" : "",
                   ].join(" ")
                 }
-                to="/name"
+                to="/starred"
               >
                 <svg
                   class=" c-qd"
@@ -237,7 +237,7 @@ export default () => {
                     isTransitioning ? "transitioning" : "",
                   ].join(" ")
                 }
-                to="/name"
+                to="/spam"
               >
                 <svg
                   class="c-qd "
@@ -270,7 +270,7 @@ export default () => {
                     isTransitioning ? "transitioning" : "",
                   ].join(" ")
                 }
-                to="/name"
+                to="/trash"
               >
                 <svg
                   width="20px"
@@ -303,7 +303,7 @@ export default () => {
                     isTransitioning ? "transitioning" : "",
                   ].join(" ")
                 }
-                to="/name"
+                to="/storage"
               >
                 <svg
                   class="a-s-fa-Ha-pa c-qd a-ml-da-Q-c"

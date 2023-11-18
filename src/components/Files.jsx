@@ -1,31 +1,51 @@
 import React from "react";
 import MenuDots from "./MenuDots";
-export default () => {
+import "./file.css";
+export default (props) => {
+  const grid = props.grid;
   return (
     <>
-      <div className="file-box p-0 m-0">
-        <div className="file-content rounded-3 p-2">
-          <div className="file-header d-flex align-items-center w-100 pb-2">
-            <img
-              className=" m-3 p-0 "
-              width={20}
-              src="https://drive-thirdparty.googleusercontent.com/32/type/image/jpeg"
-              alt="Image"
-              height={20}
-            ></img>
-            <p className="p-0 m-0">File 1</p>
+      <div className={`${grid ? "file-box" : "list"} p-0 m-0`}>
+        <div className={`${grid && "file-content rounded-3"} p-0`}>
+          <div
+            className={`file-header ${
+              grid && "d-flex"
+            } align-items-center p-0 w-100  position-relative ${
+              !grid && "list-header d-grid"
+            }`}
+          >
+            <div className="d-flex align-items-center">
+              <img
+                className=" m-3  p-0 "
+                width={21}
+                src="https://drive-thirdparty.googleusercontent.com/32/type/image/jpeg"
+                alt="Image"
+                height={18}
+              ></img>
+              <p className="p-0 m-0">{props.fileName}</p>
+            </div>
+            {!grid && (
+              <>
+                <p className="d-none d-md-grid">me</p>
+                <p className="d-none d-sm-grid">xx/xx/xxxx</p>
+                <p className="d-none d-md-grid">-</p>
+              </>
+            )}
             <MenuDots />
           </div>
-          <div className="file-body rounded-2 d-flex align-items-center justify-content-center">
-            <img
-              jsaction=""
-              className=" p-4"
-              src="https://drive-thirdparty.googleusercontent.com/64/type/image/jpeg"
-              alt=""
-            ></img>
-          </div>
+          {grid && (
+            <div className="file-body rounded-2 d-flex align-items-center justify-content-center mx-2 ">
+              <img
+                jsaction=""
+                className=" p-3"
+                src="https://drive-thirdparty.googleusercontent.com/64/type/image/jpeg"
+                alt=""
+              ></img>
+            </div>
+          )}
         </div>
       </div>
+      {!grid && <hr className="m-0 p-0" />}
     </>
   );
 };
