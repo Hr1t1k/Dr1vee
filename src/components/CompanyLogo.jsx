@@ -5,14 +5,14 @@ export default () => {
   return (
     <div className="logo ms-md-3">
       <a
-        href="#"
+        href="/"
         className="d-flex align-items-center mb-0  link-body-emphasis text-decoration-none"
         aria-expanded="false"
       >
         <img
-          class="gb_Kc gb_Kd"
+          className="gb_Kc gb_Kd"
           src="//ssl.gstatic.com/images/branding/product/1x/drive_2020q4_48dp.png"
-          srcset="//ssl.gstatic.com/images/branding/product/2x/drive_2020q4_48dp.png 2x ,//ssl.gstatic.com/images/branding/product/1x/drive_2020q4_48dp.png 1x"
+          srcSet="//ssl.gstatic.com/images/branding/product/2x/drive_2020q4_48dp.png 2x ,//ssl.gstatic.com/images/branding/product/1x/drive_2020q4_48dp.png 1x"
           alt=""
           aria-hidden="true"
           role="presentation"

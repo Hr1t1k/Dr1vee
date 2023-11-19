@@ -26,7 +26,7 @@ export default () => {
           aria-label="Toggle navigation"
         >
           <svg
-            class="a-s-fa-Ha-pa c-qd"
+            className="a-s-fa-Ha-pa c-qd"
             width="24px"
             height="24px"
             viewBox="0 0 24 24"

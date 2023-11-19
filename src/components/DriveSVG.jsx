@@ -25,7 +25,7 @@ export default () => {
           stroke="none"
           stroke-width="1"
           fill="none"
-          fill-rule="evenodd"
+          fillRule="evenodd"
         >
           {" "}
           <g id="Color-" transform="translate(-601.000000, -955.000000)">

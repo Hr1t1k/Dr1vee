@@ -6,6 +6,7 @@ import Folder from "./Folder";
 import useLayout from "../context/LayoutContext";
 export default () => {
   const { grid, setGrid } = useLayout();
+
   var files = [];
   var folders = ["Folder 1"];
   for (var i = 1; i <= 8; i++) {
@@ -26,7 +27,7 @@ export default () => {
         >
           {grid && (
             <svg
-              class="a-s-fa-Ha-pa c-qd"
+              className="a-s-fa-Ha-pa c-qd"
               width="24px"
               height="24px"
               viewBox="0 0 24 24"
@@ -38,7 +39,7 @@ export default () => {
           )}
           {!grid && (
             <svg
-              class="a-s-fa-Ha-pa c-qd"
+              className="a-s-fa-Ha-pa c-qd"
               width="24px"
               height="24px"
               viewBox="0 0 24 24"
@@ -72,7 +73,7 @@ export default () => {
           }`}
         >
           {folders.map((folder) => {
-            return <Folder folderName={folder} grid={grid} />;
+            return <Folder folderName={folder} grid={grid} key={folder} />;
           })}
         </div>
         {grid && <div className="my-2 mx-md-0 mx-2">Files</div>}
@@ -84,7 +85,7 @@ export default () => {
           }`}
         >
           {files.map((file) => {
-            return <Files fileName={file} grid={grid} />;
+            return <Files fileName={file} grid={grid} key={file} />;
           })}
         </div>
       </div>

@@ -45,7 +45,7 @@ export default () => {
                 to="/my-drive"
               >
                 <svg
-                  class="a-s-fa-Ha-pa c-qd"
+                  className="a-s-fa-Ha-pa c-qd"
                   width="20px"
                   height="20px"
                   viewBox="0 0 24 24"
@@ -79,7 +79,7 @@ export default () => {
                   viewBox="0 0 24 24"
                   fill="#000000"
                   focusable="false"
-                  class=" c-qd"
+                  className=" c-qd"
                 >
                   <g>
                     <rect fill="none" height="24" width="24"></rect>
@@ -111,7 +111,7 @@ export default () => {
                 to="/computers"
               >
                 <svg
-                  class=" c-qd"
+                  className=" c-qd"
                   width="20px"
                   height="20px"
                   viewBox="0 0 24 24"
@@ -141,7 +141,7 @@ export default () => {
                 to="/shared-with-me"
               >
                 <svg
-                  class=" c-qd"
+                  className=" c-qd"
                   width="20px"
                   height="20px"
                   viewBox="0 0 24 24"
@@ -176,7 +176,7 @@ export default () => {
                 to="/recent"
               >
                 <svg
-                  class="c-qd "
+                  className="c-qd "
                   width="20px"
                   height="20px"
                   viewBox="0 0 24 24"
@@ -210,7 +210,7 @@ export default () => {
                 to="/starred"
               >
                 <svg
-                  class=" c-qd"
+                  className=" c-qd"
                   width="20px"
                   height="20px"
                   viewBox="0 0 24 24"
@@ -240,7 +240,7 @@ export default () => {
                 to="/spam"
               >
                 <svg
-                  class="c-qd "
+                  className="c-qd "
                   width="20px"
                   height="20px"
                   viewBox="0 0 24 24"
@@ -278,7 +278,7 @@ export default () => {
                   viewBox="0 0 24 24"
                   fill="#000000"
                   focusable="false"
-                  class=" c-qd"
+                  className=" c-qd"
                 >
                   <g>
                     <path d="M0,0h24v24H0V0z" fill="none"></path>
@@ -306,7 +306,7 @@ export default () => {
                 to="/storage"
               >
                 <svg
-                  class="a-s-fa-Ha-pa c-qd a-ml-da-Q-c"
+                  className="a-s-fa-Ha-pa c-qd a-ml-da-Q-c"
                   width="20px"
                   height="20px"
                   viewBox="0 0 24 24"
@@ -328,7 +328,7 @@ export default () => {
                   aria-valuemax="100"
                   style={{ height: "4px" }}
                 >
-                  <div class="progress-bar" style={{ width: "25%" }}></div>
+                  <div className="progress-bar" style={{ width: "25%" }}></div>
                 </div>
                 <p className="sidebarItems">x GB of y GB used</p>
               </div>
