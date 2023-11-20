@@ -42,7 +42,7 @@ export default () => {
                   ].join(" ")
                 }
                 // style={{ width: "238px" }}
-                to="/my-drive"
+                to="/My Drive"
               >
                 <svg
                   className="a-s-fa-Ha-pa c-qd"
@@ -58,7 +58,7 @@ export default () => {
                 <p className="sidebarItems"> My Drive</p>
               </NavLink>
               <NavLink
-                key={1}
+                key={2}
                 className={({ isActive, isPending, isTransitioning }) =>
                   [
                     "d-inline-flex",
@@ -94,7 +94,7 @@ export default () => {
                 <p className="sidebarItems">Shared drives</p>
               </NavLink>
               <NavLink
-                key={1}
+                key={3}
                 className={({ isActive, isPending, isTransitioning }) =>
                   [
                     "d-inline-flex",
@@ -124,7 +124,7 @@ export default () => {
                 <p className="sidebarItems">Computers</p>
               </NavLink>
               <NavLink
-                key={1}
+                key={4}
                 className={({ isActive, isPending, isTransitioning }) =>
                   [
                     "d-inline-flex",
@@ -160,7 +160,7 @@ export default () => {
                 <p className="sidebarItems">Shared with me</p>
               </NavLink>
               <NavLink
-                key={1}
+                key={5}
                 className={({ isActive, isPending, isTransitioning }) =>
                   [
                     "d-inline-flex",
@@ -193,7 +193,7 @@ export default () => {
                 <p className="sidebarItems">Recent</p>
               </NavLink>
               <NavLink
-                key={1}
+                key={6}
                 className={({ isActive, isPending, isTransitioning }) =>
                   [
                     "d-inline-flex",
@@ -224,7 +224,7 @@ export default () => {
                 <p className="sidebarItems">Starred</p>
               </NavLink>
               <NavLink
-                key={1}
+                key={7}
                 className={({ isActive, isPending, isTransitioning }) =>
                   [
                     "d-inline-flex",
@@ -257,7 +257,7 @@ export default () => {
                 <p className="sidebarItems">Spam</p>
               </NavLink>
               <NavLink
-                key={1}
+                key={8}
                 className={({ isActive, isPending, isTransitioning }) =>
                   [
                     "d-inline-flex",
@@ -290,7 +290,7 @@ export default () => {
                 <p className="sidebarItems">Trash</p>
               </NavLink>
               <NavLink
-                key={1}
+                key={9}
                 className={({ isActive, isPending, isTransitioning }) =>
                   [
                     "d-inline-flex",

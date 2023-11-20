@@ -1,5 +1,9 @@
+import { signOut } from "firebase/auth";
+import auth from "../../firebasecofig";
 import React from "react";
+import { useNavigate } from "react-router-dom";
 export default () => {
+  const navigate = useNavigate();
   return (
     <div className="flex-shrink-0 dropdown me-2">
       <a
@@ -19,11 +23,6 @@ export default () => {
       <ul className="dropdown-menu text-small shadow">
         <li>
           <a className="dropdown-item" href="#">
-            New project...
-          </a>
-        </li>
-        <li>
-          <a className="dropdown-item" href="#">
             Settings
           </a>
         </li>
@@ -36,9 +35,18 @@ export default () => {
           <hr className="dropdown-divider" />
         </li>
         <li>
-          <a className="dropdown-item" href="#">
+          <button
+            className="btn dropdown-item"
+            onClick={() => {
+              signOut(auth).then(() => {
+                localStorage.removeItem("uid");
+                localStorage.removeItem("email");
+                navigate("/");
+              });
+            }}
+          >
             Sign out
-          </a>
+          </button>
         </li>
       </ul>
     </div>

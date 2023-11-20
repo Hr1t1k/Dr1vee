@@ -1,9 +1,23 @@
-import React, { useRef } from "react";
-import { Modal } from "@mui/base/Modal";
+import React, { useRef, useState } from "react";
+import {
+  getDownloadURL,
+  listAll,
+  ref,
+  uploadBytesResumable,
+  uploadString,
+} from "firebase/storage";
+import { storage } from "../../firebasecofig";
 
 export default () => {
   const inputFile = useRef(null);
   const inputFolder = useRef(null);
+  const storageRef = ref(storage);
+  const myDriveRef = ref(storage, "My Drive");
+  const [folderName, setFolderName] = useState("");
+  // listAll(myDriveRef).then((res) => console.log(res));
+  getDownloadURL(myDriveRef).then((res) => {
+    // console.log("download url", res);
+  });
   return (
     <div className="dropdown">
       <div
@@ -24,14 +38,26 @@ export default () => {
               </h3>
               <input
                 type="text"
-                className="input  p-2 my-3 border border-primary  "
+                value={folderName}
+                onChange={(event) => setFolderName(event.target.value)}
+                className="input p-2 my-3 border border-primary  "
                 style={{ width: "98%" }}
               ></input>
               <div className="d-flex justify-content-end gap-4">
                 <button type="button" className="btn " data-bs-dismiss="modal">
                   Cancel
                 </button>
-                <button type="button" className="btn text-primary">
+                <button
+                  type="button"
+                  className="btn text-primary"
+                  onClick={async () => {
+                    await uploadString(
+                      ref(storage, `${folderName}/.ghostfile`),
+                      ""
+                    );
+                  }}
+                  data-bs-dismiss="modal"
+                >
                   Create
                 </button>
               </div>
@@ -107,6 +133,14 @@ export default () => {
             id="file"
             ref={inputFile}
             style={{ display: "none" }}
+            onChange={(event) => {
+              console.log(event.target.files[0]);
+              const fileRef = ref(
+                storage,
+                `My Drive/${event.target.files[0].name}`
+              );
+              uploadBytesResumable(fileRef, event.target.files[0]);
+            }}
           />
         </li>
         <li>

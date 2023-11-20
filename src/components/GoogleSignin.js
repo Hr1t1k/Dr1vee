@@ -6,17 +6,16 @@ import {
 import auth from "../../firebasecofig";
 export default () => {
   const provider = new GoogleAuthProvider();
-  signInWithRedirect(auth, provider).then(console.log("umm yeah"));
+  signInWithRedirect(auth, provider);
   getRedirectResult(auth)
     .then((result) => {
-      console.log("inside Redirect URL");
       // This gives you a Google Access Token. You can use it to access Google APIs.
       const credential = GoogleAuthProvider.credentialFromResult(result);
       const token = credential.accessToken;
 
       // The signed-in user info.
       const user = result.user;
-      console.log("GOogle log in ", user);
+      console.log("redirect", user);
       localStorage.setItem("uid", user.uid);
       localStorage.setItem("email", user.email);
     })
