@@ -12,26 +12,25 @@ function App() {
   const [user, setUser] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
-  const uid = localStorage.getItem("uid");
   const [grid, setGrid] = useState(
     window.localStorage.getItem("grid") === "false" ? false : true
   );
-  console.log("auth.currentUser", auth.currentUser);
   onAuthStateChanged(auth, (user) => {
+    console.log("inside auth");
     if (user) {
-      setUser(true);
+      // setUser(true);
+      console.log("in");
       if (location.pathname == "/") navigate("/My Drive");
-      console.log("user signed in ");
     } else {
-      setUser(false);
-      console.log("Not signed in");
+      // setUser(false);
+      console.log("out");
       GoogleSignin();
     }
   });
 
   return (
     <>
-      {user && (
+      {
         <div className="p-0 body">
           <HeaderDrive />
           <div className="d-inline-flex w-100">
@@ -41,7 +40,7 @@ function App() {
             </LayoutProvider>
           </div>
         </div>
-      )}
+      }
     </>
   );
 }

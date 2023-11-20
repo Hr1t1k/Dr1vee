@@ -12,13 +12,18 @@ export default () => {
         data-bs-toggle="dropdown"
         aria-expanded="false"
       >
-        <img
-          src="https://github.com/mdo.png"
-          alt="mdo"
-          width="32"
-          height="32"
-          className="rounded-circle "
-        />
+        {auth.currentUser && (
+          <img
+            onClick={() => {
+              console.log(auth.currentUser.photoURL);
+            }}
+            src={auth.currentUser.photoURL}
+            alt="mdo"
+            width="32"
+            height="32"
+            className="rounded-circle "
+          />
+        )}
       </a>
       <ul className="dropdown-menu text-small shadow">
         <li>
