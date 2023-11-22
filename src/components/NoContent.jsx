@@ -1,19 +1,17 @@
 import React from "react";
-export default () => {
+export default (props) => {
   return (
     <div className="no-content d-flex flex-column align-items-center justify-content-center ">
       <div className="w-100  text-center">
         <img
+          className="p-3"
           width={"30%"}
-          style={{ minWidth: "200px" }}
+          style={{ maxWidth: "200px" }}
           role="presentation"
-          src="//ssl.gstatic.com/docs/doclist/images/empty_state_computers_v2.svg"
+          src={props.src}
         ></img>
-        <h3>No Computers Syncing</h3>
-        <p>
-          Folders on your computer that you sync with Drive using Drive for
-          desktop will show up here.
-        </p>
+        <h3>{props.header}</h3>
+        <p>{props.para}</p>
       </div>
     </div>
   );

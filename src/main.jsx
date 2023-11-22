@@ -5,7 +5,7 @@ import "./index.css";
 import "../src/scss/styles.scss";
 import * as bootstrap from "bootstrap";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import Content from "./components/Content.jsx";
+import Content from "./components/Content/Content.jsx";
 
 const router = createBrowserRouter([
   {
@@ -14,6 +14,10 @@ const router = createBrowserRouter([
     children: [
       {
         path: "/:name",
+        element: <Content />,
+      },
+      {
+        path: "/folders/:folderId",
         element: <Content />,
       },
     ],

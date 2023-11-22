@@ -1,6 +1,6 @@
 import React from "react";
 import Search from "./Search";
-import Sidebar from "./Sidebar";
+import Sidebar from "../Sidebar/Sidebar";
 import HeaderMinimizedRight from "./HeaderMinimizedRight";
 import Profile from "./Profile";
 import CompanyLogo from "./CompanyLogo";

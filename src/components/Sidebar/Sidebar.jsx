@@ -1,7 +1,7 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
 import "./sidebar.css";
-import CompanyLogo from "./CompanyLogo";
+import CompanyLogo from "../Header/CompanyLogo";
 import NewBtn from "./NewBtn";
 export default () => {
   return (
@@ -42,7 +42,7 @@ export default () => {
                   ].join(" ")
                 }
                 // style={{ width: "238px" }}
-                to="/My Drive"
+                to="/my-drive"
               >
                 <svg
                   className="a-s-fa-Ha-pa c-qd"

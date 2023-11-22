@@ -1,5 +1,5 @@
-import { signOut } from "firebase/auth";
-import auth from "../../firebasecofig";
+import { onAuthStateChanged, signOut } from "firebase/auth";
+import auth from "../../../firebasecofig";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 export default () => {
@@ -12,18 +12,15 @@ export default () => {
         data-bs-toggle="dropdown"
         aria-expanded="false"
       >
-        {auth.currentUser && (
+        <>
           <img
-            onClick={() => {
-              console.log(auth.currentUser.photoURL);
-            }}
-            src={auth.currentUser.photoURL}
+            src={localStorage.getItem("photoURL")}
             alt="mdo"
             width="32"
             height="32"
             className="rounded-circle "
           />
-        )}
+        </>
       </a>
       <ul className="dropdown-menu text-small shadow">
         <li>

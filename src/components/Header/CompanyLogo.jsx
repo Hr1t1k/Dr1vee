@@ -1,6 +1,6 @@
 import React from "react";
 import DriveSVG from "./DriveSVG";
-import "../App.css";
+import "../../App.css";
 export default () => {
   return (
     <div className="logo ms-md-3">

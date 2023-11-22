@@ -1,5 +1,5 @@
 import React from "react";
-import MenuDots from "./MenuDots";
+import MenuDots from "../MenuDots";
 import "./file.css";
 export default (props) => {
   const grid = props.grid;
