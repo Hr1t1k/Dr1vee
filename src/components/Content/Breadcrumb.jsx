@@ -1,8 +1,12 @@
 import Breadcrumbs from "@mui/material/Breadcrumbs";
 import React from "react";
 import NavigateNextIcon from "@mui/icons-material/NavigateNext";
+import { useNavigate } from "react-router-dom";
 const Breadcrumb = (props) => {
-  const path = props.path.split("/");
+  const path = props.path;
+  const navigate = useNavigate();
+  console.log("path type", typeof path);
+  console.log(path);
   const num = window.innerWidth <= 768 ? 1 : 2;
   return (
     <Breadcrumbs
@@ -49,10 +53,11 @@ const Breadcrumb = (props) => {
                 return (
                   <li>
                     <button
+                      onClick={() => navigate(`/folders/${p.id}`)}
                       className="btn text-start dropdown-item d-flex"
                       style={{ width: "100%" }}
                     >
-                      {p}
+                      {p.name}
                     </button>
                   </li>
                 );
@@ -64,10 +69,11 @@ const Breadcrumb = (props) => {
         if (path.length <= num || index >= path.length - num)
           return (
             <h4
+              onClick={() => navigate(`/folders/${p.id}`)}
               className="breadcrumb-item m-0 rounded-5 px-3 hover py-1  text-truncate"
               style={{ maxWidth: "240px" }}
             >
-              {p}
+              {p.name}
             </h4>
           );
       })}

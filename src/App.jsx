@@ -15,11 +15,12 @@ import {
   getDoc,
   collection,
   addDoc,
+  updateDoc,
 } from "firebase/firestore";
 import ROOT_FOLDER from "./components/RootFolders";
 function App() {
   //const [user, setUser] = useState(null);
-  const [path, setPath] = useState("");
+  const [path, setPath] = useState([]);
   const [folderID, setFolderID] = useState(null);
   const navigate = useNavigate();
   const location = useLocation();
@@ -41,13 +42,16 @@ function App() {
           } else {
             console.log("No such document!");
             for (const [key, value] of Object.entries(ROOT_FOLDER)) {
-              addDoc(collection(db, "Folders"), {
+              const docRef = await addDoc(collection(db, "Folders"), {
                 files: [],
                 folders: [],
                 name: value.name,
-                path: value.name,
+
                 owner: user.uid,
                 id: key,
+              });
+              await updateDoc(doc(db, "Folders", docRef.id), {
+                path: [{ name: value.name, id: docRef.id }],
               });
               await setDoc(doc(db, "users", user.uid), {
                 id: user.uid,

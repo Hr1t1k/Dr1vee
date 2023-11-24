@@ -46,13 +46,17 @@ function ModalNewfolder(props) {
                 onClick={async () => {
                   const docRef = await addDoc(collection(db, "Folders"), {
                     name: folderName,
-                    path: path + "/" + folderName,
+
                     folders: [],
                     files: [],
                     owner: auth.currentUser.uid,
                     shared: [],
                     visibility: false,
                     parent: folderID,
+                  });
+                  var currPath = [...path, { id: docRef.id, name: folderName }];
+                  await updateDoc(doc(db, "Folders", docRef.id), {
+                    path: currPath,
                   });
                   await updateDoc(doc(db, "Folders", folderID), {
                     folders: arrayUnion({ id: docRef.id, name: folderName }),

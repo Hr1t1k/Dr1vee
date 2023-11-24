@@ -1,6 +1,6 @@
 import { createContext, useContext } from "react";
 export const PathContext = createContext({
-  path: "",
+  path: [],
   setPath: () => {},
   folderID: null,
   setFolderID: () => {},

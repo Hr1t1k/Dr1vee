@@ -30,7 +30,7 @@ export default () => {
 
   const myDriveRef = ref(storage, "My Drive");
   const { path, folderID } = usePath();
-  const uploadFolder = (files) => {
+  const uploadFolder = async (files) => {
     for (var i = 0; i < files.length; i++) {
       const name = files[i].name;
       const fileId = uuidv4();
@@ -38,11 +38,14 @@ export default () => {
 
       const filePath = files[i].webkitRelativePath;
       const newFolders = filePath.split("/");
-      var currPath = path;
-      newFolders.map(async (folder) => {
+
+      newFolders.map(async (folder, index) => {
+        if (index == newFolders.length - 1) {
+          uploadFile(files, fileId, parId);
+          return;
+        }
         const docRef = await addDoc(collection(db, "Folders"), {
           name: folder,
-          path: currPath + "/" + folder,
           folders: [],
           files: [],
           owner: auth.currentUser.uid,
@@ -50,13 +53,17 @@ export default () => {
           visibility: false,
           parent: parId,
         });
+        var currPath = [...path, { id: docRef.id, name: folder }];
+        await updateDoc(doc(db, "Folders", docRef.id), {
+          path: currPath,
+        });
         await updateDoc(doc(db, "Folders", parId), {
           folders: arrayUnion({ id: docRef.id, name: folder }),
         });
+
         parId = docRef.id;
         currPath = currPath + "/" + folder;
       });
-      uploadFile(files, fileId, parId);
     }
   };
   const uploadFile = (file, fileId, parentId) => {
