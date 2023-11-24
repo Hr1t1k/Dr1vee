@@ -5,40 +5,61 @@ import Files from "../Files/Files";
 import Folder from "../Folder/Folder";
 import useLayout from "../../context/LayoutContext";
 import useUser from "../../context/UserContext";
-import { Navigate, useLocation, useParams } from "react-router-dom";
-import { collection, query, where, getDocs } from "firebase/firestore";
+
+import {
+  Navigate,
+  useLocation,
+  useNavigate,
+  useParams,
+} from "react-router-dom";
+import {
+  collection,
+  query,
+  where,
+  getDocs,
+  getDoc,
+  doc,
+} from "firebase/firestore";
 import auth, { db } from "../../../firebasecofig";
 import usePath from "../../context/PathContext";
 import ROOT_FOLDER from "../RootFolders";
+import Breadcrumb from "./Breadcrumb";
 export default () => {
   const { grid, setGrid } = useLayout();
-  const { path, setPath } = usePath();
+  const { path, setPath, setFolderID, folderID } = usePath();
   const params = useParams();
-  const [folder, setFolder] = useState([]);
-  const [file, setFile] = useState([]);
+  const [folder, setFolder] = useState(null);
+  const [file, setFile] = useState(null);
   const location = useLocation();
+  const navigate = useNavigate();
   const user = localStorage.getItem("uid");
-  var folders = ["Folder 1"];
-  var files = [];
-  for (var i = 1; i <= 8; i++) {
-    files.push("File " + i);
-  }
+  // var folders = ["Folder 1"];
+  // var files = [];
+  // for (var i = 1; i <= 8; i++) {
+  //   files.push("File " + i);
+  // }
   useEffect(() => {
+    console.log("in");
+    setFile(null);
+    setFolder(null);
     if (user) {
       if (params.name) {
         if (params.name in ROOT_FOLDER) {
           try {
+            console.log(params.name);
             const q = query(
               collection(db, "Folders"),
-              where("name", "==", params.name),
+              where("id", "==", params.name),
               where("owner", "==", user)
             );
             const querySnapshot = getDocs(q).then((querySnapshot) => {
               querySnapshot.forEach((doc) => {
                 console.log(doc.id, " => ", doc.data());
                 setPath(doc.data().path);
-                setFolder(doc.data().folder);
-                // setFile(doc.data().files);
+                setFolderID(doc.id);
+                setFolder(doc.data().folders);
+                setFile(doc.data().files);
+                console.log("Content folder", doc.data().folders);
               });
             });
           } catch (error) {
@@ -47,13 +68,32 @@ export default () => {
         } else {
           throw new Error("Invalid URL");
         }
+      } else if (params.folderId) {
+        try {
+          const docRef = doc(db, "Folders", params.folderId);
+          getDoc(docRef).then((docSnap) => {
+            if (docSnap.exists()) {
+              setPath(docSnap.data().path);
+              setFolderID(docSnap.id);
+              setFolder(docSnap.data().folders);
+              setFile(docSnap.data().files);
+            } else {
+              // docSnap.data() will be undefined in this case
+              console.log("No such document!");
+            }
+          });
+        } catch (error) {
+          console.log(error);
+        }
       }
     }
-  }, [Navigate]);
+  }, [location.pathname]);
   return (
     <div className="content-box ps-md-4 pt-md-3  p-1 pb-0 m-2 mt-0">
       <div className="py-2 px-2 px-md-0 me-md-4 d-flex justify-content-between">
-        <h4>My Drive</h4>
+        <h4>
+          <Breadcrumb path={path} />
+        </h4>
         <div
           className="layout p-1"
           onClick={() => {
@@ -88,19 +128,17 @@ export default () => {
         </div>
       </div>
       <div className="content-body overflow-scroll overflow-x-hidden pe-md-3 px-1 ps-md-0">
-        {/* {params.name && params.name in ROOT_FOLDER ? (
-          file.length + folder.length == 0 && <NoContent />
-        ) : (
-          <p></p>
-        )} */}
-        {params.name && file.length + folder.length == 0 && (
-          <NoContent
-            src={ROOT_FOLDER[params.name].src}
-            header={ROOT_FOLDER[params.name].header}
-            para={ROOT_FOLDER[params.name].para}
-          />
+        {params.name && file && folder && file.length + folder.length == 0 && (
+          <>
+            {console.log("check", file, folder)}
+            <NoContent
+              src={ROOT_FOLDER[params.name].src}
+              header={ROOT_FOLDER[params.name].header}
+              para={ROOT_FOLDER[params.name].para}
+            />
+          </>
         )}
-        {folder.length + file.length != 0 && (
+        {file && folder && folder.length + file.length != 0 && (
           <>
             {!grid && (
               <>
@@ -122,8 +160,15 @@ export default () => {
                   : "list m-0 p-0"
               }`}
             >
-              {folders.map((folder) => {
-                return <Folder folderName={folder} grid={grid} key={folder} />;
+              {folder.map((folder) => {
+                return (
+                  <Folder
+                    folderName={folder.name}
+                    grid={grid}
+                    key={folder.id}
+                    id={folder.id}
+                  />
+                );
               })}
             </div>
             {grid && <div className="my-2 mx-md-0 mx-2">Files</div>}
@@ -134,8 +179,9 @@ export default () => {
                   : ""
               }`}
             >
-              {files.map((file) => {
-                return <Files fileName={file} grid={grid} key={file} />;
+              {file.map((file) => {
+                console.log("files", file);
+                return <Files fileName={file.name} grid={grid} key={file} />;
               })}
             </div>
           </>

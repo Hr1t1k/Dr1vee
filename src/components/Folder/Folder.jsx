@@ -1,14 +1,19 @@
 import React from "react";
 import "./folder.css";
 import MenuDots from "../MenuDots";
+import { useNavigate } from "react-router-dom";
 export default (props) => {
   const grid = props.grid;
+  const navigate = useNavigate();
   return (
     <>
       <div
+        onClick={() => {
+          navigate(`/folders/${props.id}`);
+        }}
         className={`${
           grid ? "d-flex rounded-3 folder-box" : "list-header d-grid"
-        }    align-items-center position-relative`}
+        }    align-items-center position-relative btn p-0 m-0 text-start`}
       >
         <div className="d-flex align-items-center" style={{ height: "48px" }}>
           <svg
@@ -24,7 +29,7 @@ export default (props) => {
               <path d="M0 0h24v24H0z" fill="none"></path>
             </g>
           </svg>
-          <p className=" p-0 m-0">Folder 1</p>
+          <p className=" p-0 m-0">{props.folderName}</p>
         </div>
         {!grid && (
           <>

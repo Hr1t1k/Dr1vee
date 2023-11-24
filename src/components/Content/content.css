@@ -70,3 +70,14 @@
 .list-header{
     height: 48px !important;
 }
+.breadcrumbDivider{
+    --bs-breadcrumb-divider: '>';
+}
+
+.breadcrumb-item{
+    color:#444746 !important;
+}
+
+.modal-backdrop {
+    z-index: 10;
+}

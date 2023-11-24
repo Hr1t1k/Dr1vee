@@ -20,6 +20,7 @@ import ROOT_FOLDER from "./components/RootFolders";
 function App() {
   //const [user, setUser] = useState(null);
   const [path, setPath] = useState("");
+  const [folderID, setFolderID] = useState(null);
   const navigate = useNavigate();
   const location = useLocation();
   const [grid, setGrid] = useState(
@@ -40,7 +41,7 @@ function App() {
           } else {
             console.log("No such document!");
             for (const [key, value] of Object.entries(ROOT_FOLDER)) {
-              addDoc(collection(db, "folders"), {
+              addDoc(collection(db, "Folders"), {
                 files: [],
                 folders: [],
                 name: value.name,
@@ -73,7 +74,7 @@ function App() {
           <HeaderDrive />
 
           <div className="d-inline-flex w-100">
-            <PathProvider value={{ path, setPath }}>
+            <PathProvider value={{ path, setPath, folderID, setFolderID }}>
               <Sidebar />
               <LayoutProvider value={{ grid, setGrid }}>
                 <Outlet />

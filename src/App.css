@@ -49,3 +49,7 @@
         -webkit-appearance: none !important;
     }
 }
+.hover:hover{
+    background-color: #e8eaed;
+    cursor: pointer;
+}

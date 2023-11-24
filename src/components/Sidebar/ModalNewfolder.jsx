@@ -1,9 +1,16 @@
 import React, { useState } from "react";
-import { collection, addDoc } from "firebase/firestore";
+import {
+  collection,
+  updateDoc,
+  addDoc,
+  doc,
+  arrayUnion,
+} from "firebase/firestore";
 import usePath from "../../context/PathContext";
+import auth, { db } from "../../../firebasecofig";
 function ModalNewfolder(props) {
   const [folderName, setFolderName] = useState("");
-  const { path } = usePath();
+  const { path, folderID } = usePath();
   return (
     <div
       className="modal fade"
@@ -11,10 +18,11 @@ function ModalNewfolder(props) {
       tabIndex="-1"
       aria-labelledby="exampleModalLabel"
       aria-hidden="true"
+      style={{ zIndex: "2000" }}
     >
       <div
         className="modal-dialog modal-dialog-centered"
-        style={{ width: "25%" }}
+        style={{ width: "25%", minWidth: "350px" }}
       >
         <div className="modal-content">
           <div className="modal-body p-4">
@@ -38,12 +46,16 @@ function ModalNewfolder(props) {
                 onClick={async () => {
                   const docRef = await addDoc(collection(db, "Folders"), {
                     name: folderName,
-                    path: path + folderName,
-                    folder: [],
+                    path: path + "/" + folderName,
+                    folders: [],
                     files: [],
                     owner: auth.currentUser.uid,
                     shared: [],
                     visibility: false,
+                    parent: folderID,
+                  });
+                  await updateDoc(doc(db, "Folders", folderID), {
+                    folders: arrayUnion({ id: docRef.id, name: folderName }),
                   });
                   setFolderName("");
                 }}
