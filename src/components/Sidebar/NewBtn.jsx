@@ -26,46 +26,152 @@ export default () => {
   const inputFile = useRef(null);
   const inputFolder = useRef(null);
   const storage = getStorage();
-  const storageRef = ref(storage);
 
-  const myDriveRef = ref(storage, "My Drive");
   const { path, folderID } = usePath();
-  const uploadFolder = async (files) => {
-    for (var i = 0; i < files.length; i++) {
-      const name = files[i].name;
-      const fileId = uuidv4();
-      var parId = folderID;
-
-      const filePath = files[i].webkitRelativePath;
-      const newFolders = filePath.split("/");
-
-      newFolders.map(async (folder, index) => {
-        if (index == newFolders.length - 1) {
-          uploadFile(files, fileId, parId);
-          return;
-        }
-        const docRef = await addDoc(collection(db, "Folders"), {
-          name: folder,
-          folders: [],
-          files: [],
-          owner: auth.currentUser.uid,
-          shared: [],
-          visibility: false,
-          parent: parId,
-        });
-        var currPath = [...path, { id: docRef.id, name: folder }];
+  const u = async (
+    folders,
+    idx,
+    folderPath,
+    currFolderPath,
+    parId,
+    fileId,
+    files,
+    ind,
+    currPath
+  ) => {
+    currFolderPath = currFolderPath + "/" + folders[idx];
+    console.log(idx, folders[idx], folders.length, ind);
+    if (currFolderPath in folderPath) {
+      currPath = folderPath[currFolderPath].path;
+      parId = folderPath[currFolderPath].id;
+      if (idx == folders.length - 2) {
+        uploadFile(files[ind], fileId, parId);
+        if (ind < files.length) uf(files, ind + 1, folderPath);
+        return;
+      }
+      if (idx < folders.length - 1)
+        u(
+          folders,
+          idx + 1,
+          folderPath,
+          currFolderPath,
+          parId,
+          fileId,
+          files,
+          ind,
+          currPath
+        );
+    } else {
+      const docRef = await addDoc(collection(db, "Folders"), {
+        name: folders[idx],
+        folders: [],
+        files: [],
+        owner: auth.currentUser.uid,
+        shared: [],
+        visibility: false,
+        parent: parId,
+      }).then(async (docRef) => {
+        var currPath = [...path, { id: docRef.id, name: folders[idx] }];
+        folderPath[currFolderPath] = { id: docRef.id, path: currPath };
         await updateDoc(doc(db, "Folders", docRef.id), {
           path: currPath,
         });
         await updateDoc(doc(db, "Folders", parId), {
-          folders: arrayUnion({ id: docRef.id, name: folder }),
+          folders: arrayUnion({ id: docRef.id, name: folders[idx] }),
         });
-
+        if (idx == folders.length - 2) {
+          console.log(parId, files[ind], ind, docRef.id);
+          uploadFile(files[ind], fileId, docRef.id);
+          if (ind < files.length) uf(files, ind + 1, folderPath);
+          return;
+        }
         parId = docRef.id;
-        currPath = currPath + "/" + folder;
+        if (idx < folders.length - 1)
+          u(
+            folders,
+            idx + 1,
+            folderPath,
+            currFolderPath,
+            parId,
+            fileId,
+            files,
+            ind,
+            currPath
+          );
       });
     }
   };
+  const uf = async (files, ind, folderPath) => {
+    const fileId = uuidv4();
+    var currFolderPath = "";
+    var parId = folderID;
+    const filePath = files[ind].webkitRelativePath;
+    const newFolders = filePath.split("/");
+    var currPath = path;
+    u(
+      newFolders,
+      0,
+      folderPath,
+      currFolderPath,
+      parId,
+      fileId,
+      files,
+      ind,
+      currPath
+    );
+  };
+  const uploadFolder = async (files) => {
+    var k = 0;
+    var folderPath = {};
+    uf(files, 0, folderPath);
+  };
+
+  // const uploadFolder = async (files) => {
+  //   var k = 0;
+  //   var folderPath = {};
+
+  //   for (var i = 0; i < files.length; i++) {
+  //     const fileId = uuidv4();
+  //     var currFolderPath = "";
+  //     var parId = folderID;
+  //     const filePath = files[i].webkitRelativePath;
+  //     const newFolders = filePath.split("/");x
+  //     newFolders.map(async (folder, index) => {
+  //       currFolderPath = currFolderPath + "/" + folder;
+
+  //       if (currFolderPath in folderPath) {
+  //         currPath = folderPath[currFolderPath].path;
+  //         parId = folderPath[currFolderPath].id;
+  //       } else {
+  //         const newFolderId=uuidv4();
+  //         const docRef = await setDoc(collection(db, "Folders",newFolderId), {
+  //           name: folder,
+  //           folders: [],
+  //           files: [],
+  //           owner: auth.currentUser.uid,
+  //           shared: [],
+  //           visibility: false,
+  //           parent: parId,
+  //         }).then(async (docRef) => {
+  //           var currPath = [...path, { id: docRef.id, name: folder }];
+  //           folderPath[currFolderPath] = { id: docRef.id, path: currPath };
+  //           await updateDoc(doc(db, "Folders", docRef.id), {
+  //             path: currPath,
+  //           });
+  //           await updateDoc(doc(db, "Folders", parId), {
+  //             folders: arrayUnion({ id: docRef.id, name: folder }),
+  //           });
+  //           if (index == newFolders.length - 2) {
+  //             console.log(parId, files[i], i, docRef.id);
+  //             uploadFile(files[k++], fileId, docRef.id);
+  //             return;
+  //           }
+  //           parId = docRef.id;
+  //         });
+  //       }
+  //     });
+  //   }
+  // };
   const uploadFile = (file, fileId, parentId) => {
     // const { path } = usePath();
     console.log("choosen file", file);
