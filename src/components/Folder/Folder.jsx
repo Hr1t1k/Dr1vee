@@ -1,10 +1,69 @@
 import React from "react";
 import "./folder.css";
 import MenuDots from "../MenuDots";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import {
+  doc,
+  getDoc,
+  getDocs,
+  updateDoc,
+  query,
+  collection,
+  where,
+  arrayUnion,
+  arrayRemove,
+} from "firebase/firestore";
+import auth, { db } from "../../../firebasecofig";
 export default (props) => {
   const grid = props.grid;
+  const params = useParams();
   const navigate = useNavigate();
+  const folderDelete = async () => {
+    console.log("called");
+    const docRef = doc(db, "Folders", props.id);
+    //const docSnap = await getDoc(docRef);
+    const user = localStorage.getItem("uid");
+
+    const q = query(
+      collection(db, "Folders"),
+      where("id", "==", "trash"),
+      where("owner", "==", user)
+    );
+    const querySnapshot = getDocs(q).then((querySnapshot) => {
+      querySnapshot.forEach(async (d) => {
+        const trashRef = doc(db, "Folders", d.id);
+        updateDoc(trashRef, {
+          folders: arrayUnion({ id: props.id, name: props.folderName }),
+        });
+        updateDoc(doc(db, "Folders", "deleted"), {
+          folders: arrayUnion(props.id),
+        });
+        console.log(
+          "folder to delete",
+          {
+            id: props.id,
+            name: props.folderName,
+          },
+          params.folderId
+        );
+        const objToRemove = {
+          id: props.id,
+          name: props.folderName,
+        };
+
+        await updateDoc(doc(db, "Folders", params.folderId), {
+          folders: arrayRemove(objToRemove),
+        })
+          .then((x) => {
+            console.log("deleted", x);
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+        console.log("folder0 to delete", props.id, props.folderName);
+      });
+    });
+  };
   return (
     <>
       <div
@@ -38,7 +97,7 @@ export default (props) => {
             <p className="d-none d-md-grid">-</p>
           </>
         )}
-        <MenuDots />
+        <MenuDots onClick={folderDelete} />
       </div>
       {!grid && <hr className="m-0 p-0" />}
     </>

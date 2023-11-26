@@ -14,6 +14,7 @@ import {
   doc,
   arrayUnion,
   FieldPath,
+  arrayRemove,
 } from "firebase/firestore";
 import auth, { db } from "../../../firebasecofig";
 import ModalNewfolder from "./ModalNewfolder";

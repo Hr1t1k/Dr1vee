@@ -22,6 +22,7 @@ function App() {
   //const [user, setUser] = useState(null);
   const [path, setPath] = useState([]);
   const [folderID, setFolderID] = useState(null);
+  // const [root,setRoot]=useState({});
   const navigate = useNavigate();
   const location = useLocation();
   const [grid, setGrid] = useState(
@@ -50,6 +51,7 @@ function App() {
                 owner: user.uid,
                 id: key,
               });
+              // setRoot({...root,{value.name:docRef.id}});
               await updateDoc(doc(db, "Folders", docRef.id), {
                 path: [{ name: value.name, id: docRef.id }],
               });

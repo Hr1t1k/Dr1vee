@@ -1,11 +1,17 @@
 import React from "react";
-export default () => {
+
+export default (props) => {
+  const id = props.id;
+
   return (
     <>
       <div
         className=" d-flex align-items-center three-dots p-1"
         data-bs-toggle="dropdown"
         aria-expanded="false"
+        onClick={(event) => {
+          event.stopPropagation();
+        }}
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -83,7 +89,13 @@ export default () => {
         </li>
 
         <li>
-          <a className="dropdown-item d-flex align-items-center gap-3" href="#">
+          <a
+            className="dropdown-item d-flex align-items-center gap-3"
+            onClick={(event) => {
+              event.stopPropagation();
+              props.onClick();
+            }}
+          >
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="16"

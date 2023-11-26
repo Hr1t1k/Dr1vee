@@ -19,6 +19,7 @@ import {
   getDocs,
   getDoc,
   doc,
+  onSnapshot,
 } from "firebase/firestore";
 import auth, { db } from "../../../firebasecofig";
 import usePath from "../../context/PathContext";
@@ -33,11 +34,6 @@ export default () => {
   const location = useLocation();
   const navigate = useNavigate();
   const user = localStorage.getItem("uid");
-  // var folders = ["Folder 1"];
-  // var files = [];
-  // for (var i = 1; i <= 8; i++) {
-  //   files.push("File " + i);
-  // }
   useEffect(() => {
     console.log("in");
     setFile(null);
@@ -52,16 +48,22 @@ export default () => {
               where("id", "==", params.name),
               where("owner", "==", user)
             );
-            const querySnapshot = getDocs(q).then((querySnapshot) => {
-              querySnapshot.forEach((doc) => {
-                console.log(doc.id, " => ", doc.data());
-                setPath(doc.data().path);
-                setFolderID(doc.id);
-                setFolder(doc.data().folders);
-                setFile(doc.data().files);
-                console.log("Content folder", doc.data().folders);
-              });
-            });
+            const unsubscribe = onSnapshot(
+              q,
+              (querySnapshot) => {
+                querySnapshot.forEach((doc) => {
+                  console.log(doc.id, " => ", doc.data());
+                  setPath(doc.data().path);
+                  setFolderID(doc.id);
+                  setFolder(doc.data().folders);
+                  setFile(doc.data().files);
+                  console.log("Content folder", doc.data().folders);
+                });
+              },
+              (error) => {
+                console.log(error);
+              }
+            );
           } catch (error) {
             console.log(error);
           }
@@ -71,7 +73,7 @@ export default () => {
       } else if (params.folderId) {
         try {
           const docRef = doc(db, "Folders", params.folderId);
-          getDoc(docRef).then((docSnap) => {
+          const unsub = onSnapshot(docRef, (docSnap) => {
             if (docSnap.exists()) {
               setPath(docSnap.data().path);
               setFolderID(docSnap.id);
@@ -127,7 +129,7 @@ export default () => {
           )}
         </div>
       </div>
-      <div className="content-body overflow-scroll overflow-x-hidden pe-md-3 px-1 ps-md-0">
+      <div className="content-body overflow-scroll overflow-x-hidden pe-md-3 px-1 px-md-3 ">
         {params.name && file && folder && file.length + folder.length == 0 && (
           <>
             {console.log("check", file, folder)}
@@ -152,7 +154,9 @@ export default () => {
                 <hr className="m-0 p-0 w-100" />
               </>
             )}
-            {grid && <div className={`my-2 mx-md-0 mx-2 `}>Folders</div>}
+            {grid && folder.length != 0 && (
+              <div className={`my-2 mx-md-0 mx-2 `}>Folders</div>
+            )}
             <div
               className={` ${
                 grid
@@ -171,7 +175,9 @@ export default () => {
                 );
               })}
             </div>
-            {grid && <div className="my-2 mx-md-0 mx-2">Files</div>}
+            {grid && file.length != 0 && (
+              <div className="my-2 mx-md-0 mx-2">Files</div>
+            )}
             <div
               className={` ${
                 grid
