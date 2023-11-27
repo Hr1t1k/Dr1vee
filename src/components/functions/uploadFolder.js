@@ -30,7 +30,8 @@ const uploadFolder = async (files, folderID, path) => {
     for await (const [index, folder] of folders.entries()) {
       folderStringPath += "/" + folder;
       if (folderStringPath in folderPath) {
-        parId = folderPath[folderStringPath];
+        parId = folderPath[folderStringPath].id;
+        currPath = folderPath[folderStringPath].path;
       } else {
         await addDoc(collection(db, "Folders"), {
           name: folder,
@@ -50,7 +51,7 @@ const uploadFolder = async (files, folderID, path) => {
             folders: arrayUnion(docRef.id),
           });
           parId = docRef.id;
-          folderPath[folderStringPath] = docRef.id;
+          folderPath[folderStringPath] = { id: docRef.id, path: currPath };
           if (index == folders.length - 1) {
             uploadFile(file, uuidv4(), parId);
           }
@@ -58,6 +59,7 @@ const uploadFolder = async (files, folderID, path) => {
       }
     }
   }
+  folderPath = {};
 };
 
 export default uploadFolder;

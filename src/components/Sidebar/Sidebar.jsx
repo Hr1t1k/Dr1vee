@@ -1,9 +1,10 @@
 import React from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, Navigate, useNavigate } from "react-router-dom";
 import "./sidebar.css";
 import CompanyLogo from "../Header/CompanyLogo";
 import NewBtn from "./NewBtn";
 export default () => {
+  const navigate = useNavigate();
   return (
     <>
       <div className="sidebar overflow-x-hidden">
@@ -41,8 +42,13 @@ export default () => {
                     isTransitioning ? "transitioning" : "",
                   ].join(" ")
                 }
-                // style={{ width: "238px" }}
                 to="/my-drive"
+                onClick={(e) => {
+                  e.preventDefault();
+                  navigate("/my-drive");
+                }}
+                data-bs-target="#sidebarMenu"
+                data-bs-dismiss="offcanvas"
               >
                 <svg
                   className="a-s-fa-Ha-pa c-qd"
@@ -72,6 +78,12 @@ export default () => {
                   ].join(" ")
                 }
                 to="/shared-drives"
+                onClick={(e) => {
+                  e.preventDefault();
+                  navigate("/shared-drives");
+                }}
+                data-bs-target="#sidebarMenu"
+                data-bs-dismiss="offcanvas"
               >
                 <svg
                   width="20px"
@@ -109,6 +121,12 @@ export default () => {
                   ].join(" ")
                 }
                 to="/computers"
+                onClick={(e) => {
+                  e.preventDefault();
+                  navigate("/computers");
+                }}
+                data-bs-target="#sidebarMenu"
+                data-bs-dismiss="offcanvas"
               >
                 <svg
                   className=" c-qd"
@@ -139,6 +157,12 @@ export default () => {
                   ].join(" ")
                 }
                 to="/shared-with-me"
+                onClick={(e) => {
+                  e.preventDefault();
+                  navigate("/shared-with-me");
+                }}
+                data-bs-target="#sidebarMenu"
+                data-bs-dismiss="offcanvas"
               >
                 <svg
                   className=" c-qd"
@@ -174,6 +198,12 @@ export default () => {
                   ].join(" ")
                 }
                 to="/recent"
+                onClick={(e) => {
+                  e.preventDefault();
+                  navigate("/recent");
+                }}
+                data-bs-target="#sidebarMenu"
+                data-bs-dismiss="offcanvas"
               >
                 <svg
                   className="c-qd "
@@ -208,6 +238,12 @@ export default () => {
                   ].join(" ")
                 }
                 to="/starred"
+                onClick={(e) => {
+                  e.preventDefault();
+                  navigate("/starred");
+                }}
+                data-bs-target="#sidebarMenu"
+                data-bs-dismiss="offcanvas"
               >
                 <svg
                   className=" c-qd"
@@ -238,6 +274,12 @@ export default () => {
                   ].join(" ")
                 }
                 to="/spam"
+                onClick={(e) => {
+                  e.preventDefault();
+                  navigate("/spam");
+                }}
+                data-bs-target="#sidebarMenu"
+                data-bs-dismiss="offcanvas"
               >
                 <svg
                   className="c-qd "
@@ -271,6 +313,12 @@ export default () => {
                   ].join(" ")
                 }
                 to="/trash"
+                onClick={(e) => {
+                  e.preventDefault();
+                  navigate("/trash");
+                }}
+                data-bs-target="#sidebarMenu"
+                data-bs-dismiss="offcanvas"
               >
                 <svg
                   width="20px"
@@ -304,6 +352,12 @@ export default () => {
                   ].join(" ")
                 }
                 to="/storage"
+                onClick={(e) => {
+                  e.preventDefault();
+                  navigate("/storage");
+                }}
+                data-bs-target="#sidebarMenu"
+                data-bs-dismiss="offcanvas"
               >
                 <svg
                   className="a-s-fa-Ha-pa c-qd a-ml-da-Q-c"
@@ -336,6 +390,12 @@ export default () => {
                 <button
                   type="button"
                   className="btn btn-outline-dark ms-2 px-4 rounded-5 mt-2 storageBtn"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    navigate("/my-drive");
+                  }}
+                  data-bs-target="#sidebarMenu"
+                  data-bs-dismiss="offcanvas"
                 >
                   <p>Get more storage</p>
                 </button>

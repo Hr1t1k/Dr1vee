@@ -1,22 +1,5 @@
 import React, { useRef, useState } from "react";
-import {
-  getDownloadURL,
-  listAll,
-  ref,
-  uploadBytesResumable,
-  uploadString,
-  getStorage,
-} from "firebase/storage";
-import {
-  collection,
-  updateDoc,
-  addDoc,
-  doc,
-  arrayUnion,
-  FieldPath,
-  arrayRemove,
-} from "firebase/firestore";
-import auth, { db } from "../../../firebasecofig";
+import { getStorage } from "firebase/storage";
 import ModalNewfolder from "./ModalNewfolder";
 import SVG from "../SVG";
 import usePath from "../../context/PathContext";

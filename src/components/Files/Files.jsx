@@ -15,7 +15,10 @@ export default (props) => {
               !grid && "list-header d-grid"
             }`}
           >
-            <div className="d-flex align-items-center">
+            <div
+              className="d-flex align-items-center overflow-hidden text-nowrap"
+              style={{ width: "85%" }}
+            >
               <img
                 className=" m-3  p-0 "
                 width={21}
