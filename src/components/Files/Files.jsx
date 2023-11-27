@@ -3,6 +3,7 @@ import MenuDots from "../MenuDots";
 import "./file.css";
 export default (props) => {
   const grid = props.grid;
+  const file = props.file;
   return (
     <>
       <div className={`${grid ? "file-box" : "list"} p-0 m-0`}>
@@ -22,7 +23,7 @@ export default (props) => {
                 alt="Image"
                 height={18}
               ></img>
-              <p className="p-0 m-0">{props.fileName}</p>
+              <p className="p-0 m-0">{file.name}</p>
             </div>
             {!grid && (
               <>
@@ -31,7 +32,7 @@ export default (props) => {
                 <p className="d-none d-md-grid">-</p>
               </>
             )}
-            <MenuDots />
+            <MenuDots file={file} />
           </div>
           {grid && (
             <div className="file-body rounded-2 d-flex align-items-center justify-content-center mx-2 ">

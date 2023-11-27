@@ -57,6 +57,7 @@ function ModalNewfolder(props) {
                   var currPath = [...path, { id: docRef.id, name: folderName }];
                   await updateDoc(doc(db, "Folders", docRef.id), {
                     path: currPath,
+                    id: docRef.id,
                   });
                   await updateDoc(doc(db, "Folders", folderID), {
                     folders: arrayUnion({ id: docRef.id, name: folderName }),

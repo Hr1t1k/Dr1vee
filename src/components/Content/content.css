@@ -18,7 +18,8 @@
 }
 @media (min-width:1400px){
     .content{
-        grid-template-columns: 1fr 1fr 1fr 1fr 1fr     
+        grid-template-columns: 1fr 1fr 1fr 1fr 1fr  ;
+     
     }
         .list-header {
             grid-template-columns: 5fr 2fr 2fr 1fr 1fr;
@@ -26,7 +27,8 @@
 }
 @media (min-width:1200px) and (max-width:1400px) {
     .content {
-        grid-template-columns: 1fr 1fr 1fr 1fr 
+        grid-template-columns: 1fr 1fr 1fr 1fr ;
+        
     }
         .list-header {
             grid-template-columns: 5fr 2fr 2fr 1fr 1fr;
@@ -80,4 +82,7 @@
 
 .modal-backdrop {
     z-index: 10;
+}
+p{
+    text-overflow: ellipsis;
 }

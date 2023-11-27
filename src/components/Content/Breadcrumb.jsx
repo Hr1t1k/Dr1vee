@@ -5,8 +5,6 @@ import { useNavigate } from "react-router-dom";
 const Breadcrumb = (props) => {
   const path = props.path;
   const navigate = useNavigate();
-  console.log("path type", typeof path);
-  console.log(path);
   const num = window.innerWidth <= 768 ? 1 : 2;
   return (
     <Breadcrumbs
@@ -51,9 +49,11 @@ const Breadcrumb = (props) => {
             {path.map((p, index) => {
               if (index < path.length - num)
                 return (
-                  <li>
+                  <li key={index}>
                     <button
-                      onClick={() => navigate(`/folders/${p.id}`)}
+                      onClick={() =>
+                        navigate(index == 0 ? `/${p.id}` : `/folders/${p.id}`)
+                      }
                       className="btn text-start dropdown-item d-flex"
                       style={{ width: "100%" }}
                     >
@@ -66,16 +66,20 @@ const Breadcrumb = (props) => {
         </div>
       )}
       {path.map((p, index) => {
-        if (path.length <= num || index >= path.length - num)
+        if (path.length <= num || index >= path.length - num) {
           return (
             <h4
-              onClick={() => navigate(`/folders/${p.id}`)}
+              key={index}
+              onClick={() =>
+                navigate(index == 0 ? `/${p.id}` : `/folders/${p.id}`)
+              }
               className="breadcrumb-item m-0 rounded-5 px-3 hover py-1  text-truncate"
               style={{ maxWidth: "240px" }}
             >
               {p.name}
             </h4>
           );
+        }
       })}
     </Breadcrumbs>
   );

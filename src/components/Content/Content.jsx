@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import NoContent from "../NoContent";
+import NoContent from "./NoContent";
 import "./content.css";
 import Files from "../Files/Files";
 import Folder from "../Folder/Folder";
@@ -25,24 +25,23 @@ import auth, { db } from "../../../firebasecofig";
 import usePath from "../../context/PathContext";
 import ROOT_FOLDER from "../RootFolders";
 import Breadcrumb from "./Breadcrumb";
+import Layout from "./Layout";
 export default () => {
   const { grid, setGrid } = useLayout();
   const { path, setPath, setFolderID, folderID } = usePath();
   const params = useParams();
-  const [folder, setFolder] = useState(null);
-  const [file, setFile] = useState(null);
+  const [folder, setFolder] = useState(["NULL"]);
+  const [file, setFile] = useState(["NULL"]);
   const location = useLocation();
   const navigate = useNavigate();
   const user = localStorage.getItem("uid");
   useEffect(() => {
-    console.log("in");
-    setFile(null);
-    setFolder(null);
+    setFile(["NULL"]);
+    setFolder(["NULL"]);
     if (user) {
       if (params.name) {
         if (params.name in ROOT_FOLDER) {
           try {
-            console.log(params.name);
             const q = query(
               collection(db, "Folders"),
               where("id", "==", params.name),
@@ -52,12 +51,40 @@ export default () => {
               q,
               (querySnapshot) => {
                 querySnapshot.forEach((doc) => {
-                  console.log(doc.id, " => ", doc.data());
                   setPath(doc.data().path);
                   setFolderID(doc.id);
-                  setFolder(doc.data().folders);
-                  setFile(doc.data().files);
-                  console.log("Content folder", doc.data().folders);
+
+                  const folderQuery = query(
+                    collection(db, "Folders"),
+                    where("parent", "==", doc.id)
+                  );
+                  onSnapshot(folderQuery, (folderSnap) => {
+                    var x = 0;
+                    folderSnap.forEach((folders) => {
+                      if (x == 0) setFolder([folders.data()]);
+                      else
+                        setFolder((prevFolder) => [
+                          ...prevFolder,
+                          folders.data(),
+                        ]);
+
+                      x++;
+                    });
+                    if (x == 0) setFolder([]);
+                  });
+                  const fileQuery = query(
+                    collection(db, "Files"),
+                    where("parent", "==", doc.id)
+                  );
+                  onSnapshot(fileQuery, (fileSnap) => {
+                    var x = 0;
+                    fileSnap.forEach((files) => {
+                      if (x == 0) setFile([files.data()]);
+                      else setFile((prevfiles) => [...prevfiles, files.data()]);
+                      x++;
+                    });
+                    if (x == 0) setFile([]);
+                  });
                 });
               },
               (error) => {
@@ -77,11 +104,44 @@ export default () => {
             if (docSnap.exists()) {
               setPath(docSnap.data().path);
               setFolderID(docSnap.id);
-              setFolder(docSnap.data().folders);
-              setFile(docSnap.data().files);
+              const folderQuery = query(
+                collection(db, "Folders"),
+                where("parent", "==", params.folderId)
+              );
+              onSnapshot(folderQuery, (folderSnap) => {
+                var x = 0;
+
+                folderSnap.forEach((folders) => {
+                  if (x == 0) setFolder([folders.data()]);
+                  else
+                    setFolder((prevfolder) => [...prevfolder, folders.data()]);
+                  x++;
+                });
+                if (x == 0) {
+                  setFolder([]);
+                }
+              });
+              const fileQuery = query(
+                collection(db, "Files"),
+                where("parent", "==", params.folderId)
+              );
+
+              onSnapshot(fileQuery, (fileSnap) => {
+                var x = 0;
+
+                fileSnap.forEach((files) => {
+                  if (x == 0) setFile([files.data()]);
+                  else setFile((prevfile) => [...prevfile, files.data()]);
+                  x++;
+                });
+                if (x == 0) {
+                  setFile([]);
+                }
+              });
             } else {
               // docSnap.data() will be undefined in this case
               console.log("No such document!");
+              throw new error("invalid url");
             }
           });
         } catch (error) {
@@ -96,102 +156,69 @@ export default () => {
         <h4>
           <Breadcrumb path={path} />
         </h4>
-        <div
-          className="layout p-1"
-          onClick={() => {
-            window.localStorage.setItem("grid", !grid);
-            setGrid(!grid);
-          }}
-        >
-          {grid && (
-            <svg
-              className="a-s-fa-Ha-pa c-qd"
-              width="24px"
-              height="24px"
-              viewBox="0 0 24 24"
-              focusable="false"
-              fill="currentColor"
-            >
-              <path d="M3,5v14h18V5H3z M7,7v2H5V7H7z M5,13v-2h2v2H5z M5,15h2v2H5V15z M19,17H9v-2h10V17z M19,13H9v-2h10V13z M19,9H9V7h10V9z"></path>
-            </svg>
-          )}
-          {!grid && (
-            <svg
-              className="a-s-fa-Ha-pa c-qd"
-              width="24px"
-              height="24px"
-              viewBox="0 0 24 24"
-              fill="currentColor"
-            >
-              <path d="M2,5v14h20V5H2z M14,7v4h-4V7H14z M4,7h4v4H4V7z M16,11V7h4v4H16z M4,17v-4h4v4H4z M10,17v-4h4v4H10z M20,17 h-4v-4h4V17z"></path>
-              <path d="M0 0h24v24H0z" fill="none"></path>
-            </svg>
-          )}
-        </div>
+        <Layout />
       </div>
       <div className="content-body overflow-scroll overflow-x-hidden pe-md-3 px-1 px-md-3 ">
-        {params.name && file && folder && file.length + folder.length == 0 && (
-          <>
-            {console.log("check", file, folder)}
-            <NoContent
-              src={ROOT_FOLDER[params.name].src}
-              header={ROOT_FOLDER[params.name].header}
-              para={ROOT_FOLDER[params.name].para}
-            />
-          </>
-        )}
-        {file && folder && folder.length + file.length != 0 && (
-          <>
-            {!grid && (
-              <>
-                <div className="list-header d-grid align-items-center">
-                  <h6 className="m-0 ms-3 p-0">Name</h6>
-                  <h6 className="d-none d-md-grid m-0 p-0">Owner</h6>
-                  <h6 className="d-none d-sm-grid m-0 p-0">Last modified</h6>
-                  <h6 className="d-none d-md-grid m-0 p-0">File size</h6>
-                  <h6 className=" d-grid m-0 p-0 "></h6>
-                </div>
-                <hr className="m-0 p-0 w-100" />
-              </>
-            )}
-            {grid && folder.length != 0 && (
-              <div className={`my-2 mx-md-0 mx-2 `}>Folders</div>
-            )}
-            <div
-              className={` ${
-                grid
-                  ? "container-fluid d-grid gap-md-3 gap-2 align-items-center content p-0 m-0"
-                  : "list m-0 p-0"
-              }`}
-            >
-              {folder.map((folder) => {
-                return (
-                  <Folder
-                    folderName={folder.name}
-                    grid={grid}
-                    key={folder.id}
-                    id={folder.id}
-                  />
-                );
-              })}
-            </div>
-            {grid && file.length != 0 && (
-              <div className="my-2 mx-md-0 mx-2">Files</div>
-            )}
-            <div
-              className={` ${
-                grid
-                  ? "container-fluid d-grid gap-md-3 gap-2 align-items-center content p-0 m-0"
-                  : ""
-              }`}
-            >
-              {file.map((file) => {
-                console.log("files", file);
-                return <Files fileName={file.name} grid={grid} key={file} />;
-              })}
-            </div>
-          </>
-        )}
+        {params.name &&
+          file &&
+          folder &&
+          file[0] != "NULL" &&
+          folder[0] != "NULL" &&
+          file.length + folder.length == 0 && (
+            <>
+              <NoContent
+                src={ROOT_FOLDER[params.name].src}
+                header={ROOT_FOLDER[params.name].header}
+                para={ROOT_FOLDER[params.name].para}
+              />
+            </>
+          )}
+        {(file.length == 0 || file[0] != "NULL") &&
+          (folder.length == 0 || folder[0] != "NULL") &&
+          folder.length + file.length != 0 && (
+            <>
+              {!grid && (
+                <>
+                  <div className="list-header d-grid align-items-center">
+                    <h6 className="m-0 ms-3 p-0">Name</h6>
+                    <h6 className="d-none d-md-grid m-0 p-0">Owner</h6>
+                    <h6 className="d-none d-sm-grid m-0 p-0">Last modified</h6>
+                    <h6 className="d-none d-md-grid m-0 p-0">File size</h6>
+                    <h6 className=" d-grid m-0 p-0 "></h6>
+                  </div>
+                  <hr className="m-0 p-0 w-100" />
+                </>
+              )}
+              {grid && folder.length != 0 && (
+                <div className={`my-2 mx-md-0 mx-2 `}>Folders</div>
+              )}
+              <div
+                className={` ${
+                  grid
+                    ? "container-fluid d-grid gap-md-3 gap-2 align-items-center content p-0 m-0"
+                    : ""
+                }`}
+              >
+                {folder.map((folder) => {
+                  return <Folder folder={folder} key={folder.id} grid={grid} />;
+                })}
+              </div>
+              {grid && file.length != 0 && (
+                <div className="my-2 mx-md-0 mx-2">Files</div>
+              )}
+              <div
+                className={` ${
+                  grid
+                    ? "container-fluid d-grid gap-md-3 gap-2 align-items-center content p-0 m-0"
+                    : ""
+                }`}
+              >
+                {file.map((file) => {
+                  return <Files file={file} grid={grid} key={file.id} />;
+                })}
+              </div>
+            </>
+          )}
       </div>
     </div>
   );

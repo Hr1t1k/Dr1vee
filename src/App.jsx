@@ -31,7 +31,6 @@ function App() {
   onAuthStateChanged(
     auth,
     async (user) => {
-      console.log("inside auth");
       if (auth.currentUser) {
         //setUser(user.uid);
         localStorage.setItem("uid", auth.currentUser.uid);
@@ -39,9 +38,7 @@ function App() {
         const docRef = doc(db, "users", user.uid);
         const docSnap = await getDoc(docRef).then(async (docSnap) => {
           if (docSnap.exists()) {
-            console.log("Document data:", docSnap.data());
           } else {
-            console.log("No such document!");
             for (const [key, value] of Object.entries(ROOT_FOLDER)) {
               const docRef = await addDoc(collection(db, "Folders"), {
                 files: [],
@@ -53,7 +50,7 @@ function App() {
               });
               // setRoot({...root,{value.name:docRef.id}});
               await updateDoc(doc(db, "Folders", docRef.id), {
-                path: [{ name: value.name, id: docRef.id }],
+                path: [{ name: value.name, id: key }],
               });
               await setDoc(doc(db, "users", user.uid), {
                 id: user.uid,
