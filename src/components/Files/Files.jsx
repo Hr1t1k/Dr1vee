@@ -1,11 +1,13 @@
 import React from "react";
 import MenuDots from "../MenuDots";
 import "./file.css";
+import RenameFile from "./RenameFile";
 export default (props) => {
   const grid = props.grid;
   const file = props.file;
   return (
     <>
+      <RenameFile file={file} />
       <div className={`${grid ? "file-box" : "list"} p-0 m-0`}>
         <div className={`${grid && "file-content rounded-3"} p-0`}>
           <div

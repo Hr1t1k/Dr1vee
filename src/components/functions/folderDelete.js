@@ -29,7 +29,7 @@ const folderDelete = async (folder, folderID) => {
       const trashRef = doc(db, "Folders", d.id);
 
       updateDoc(trashRef, {
-        folders: arrayUnion({ id: folder.id, name: folder.name }),
+        folders: arrayUnion(folder.id),
       }).catch((error) => {
         console.log("error", error);
       });
@@ -38,14 +38,8 @@ const folderDelete = async (folder, folderID) => {
       }).catch((error) => {
         console.log("error", error);
       });
-
-      const objToRemove = {
-        id: folder.id,
-        name: folder.name,
-      };
-
       await updateDoc(doc(db, "Folders", folderID), {
-        folders: arrayRemove(objToRemove),
+        folders: arrayRemove(folder.id),
       }).catch((error) => {
         console.log("error", error);
       });

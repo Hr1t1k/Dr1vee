@@ -1,20 +1,10 @@
 import { v4 as uuidv4 } from "uuid";
 import {
-  getDownloadURL,
-  listAll,
-  ref,
-  uploadBytesResumable,
-  uploadString,
-  getStorage,
-} from "firebase/storage";
-import {
   collection,
   updateDoc,
   addDoc,
   doc,
   arrayUnion,
-  FieldPath,
-  arrayRemove,
 } from "firebase/firestore";
 import auth, { db } from "../../../firebasecofig";
 import uploadFile from "./uploadFile";
@@ -42,7 +32,7 @@ const uploadFolder = async (files, folderID, path) => {
           visibility: false,
           parent: parId,
         }).then(async (docRef) => {
-          currPath = [...currPath, { id: docRef.id, name: folder }];
+          currPath = [...currPath, docRef.id];
           await updateDoc(doc(db, "Folders", docRef.id), {
             id: docRef.id,
             path: currPath,

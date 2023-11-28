@@ -31,33 +31,37 @@ function App() {
   onAuthStateChanged(
     auth,
     async (user) => {
+      const startTime = performance.now();
+
       if (auth.currentUser) {
-        //setUser(user.uid);
         localStorage.setItem("uid", auth.currentUser.uid);
         localStorage.setItem("photoURL", user.photoURL);
         const docRef = doc(db, "users", user.uid);
         const docSnap = await getDoc(docRef).then(async (docSnap) => {
           if (docSnap.exists()) {
           } else {
+            const batch = writeBatch(db);
             for (const [key, value] of Object.entries(ROOT_FOLDER)) {
-              const docRef = await addDoc(collection(db, "Folders"), {
+              batch.set(doc(collection(db, "Folders")), {
                 files: [],
                 folders: [],
                 name: value.name,
-
                 owner: user.uid,
                 id: key,
-              });
-              // setRoot({...root,{value.name:docRef.id}});
-              await updateDoc(doc(db, "Folders", docRef.id), {
-                path: [{ name: value.name, id: key }],
-              });
-              await setDoc(doc(db, "users", user.uid), {
-                id: user.uid,
+                path: [key],
               });
             }
+            batch.set(doc(db, "Folders", "deleted"), {
+              folders: [],
+              files: [],
+            });
+            await batch.commit();
+            setDoc(doc(db, "users", user.uid), {
+              id: user.uid,
+            });
           }
         });
+        const endTime = performance.now();
 
         if (location.pathname == "/") navigate("/my-drive");
       } else {

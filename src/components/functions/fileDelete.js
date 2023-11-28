@@ -30,7 +30,7 @@ const fileDelete = async (file, folderID) => {
       const trashRef = doc(db, "Folders", d.id);
 
       updateDoc(trashRef, {
-        files: arrayUnion({ id: file.id, name: file.name }),
+        files: arrayUnion(file.id),
       }).catch((error) => {
         console.log("error", error);
       });
@@ -39,14 +39,8 @@ const fileDelete = async (file, folderID) => {
       }).catch((error) => {
         console.log("error", error);
       });
-
-      const objToRemove = {
-        id: file.id,
-        name: file.name,
-      };
-
       await updateDoc(doc(db, "Folders", folderID), {
-        files: arrayRemove(objToRemove),
+        files: arrayRemove(file.id),
       }).catch((error) => {
         console.log("error", error);
       });

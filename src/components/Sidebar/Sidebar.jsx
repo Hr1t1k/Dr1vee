@@ -27,7 +27,7 @@ export default () => {
           </div>
           <NewBtn />
           <div className="offcanvas-body p-0 overflow-y-auto">
-            <nav className=" nav flex-column" style={{ width: "218px" }}>
+            <nav className=" nav flex-column" style={{ width: "95%" }}>
               <NavLink
                 key={1}
                 className={({ isActive, isPending, isTransitioning }) =>

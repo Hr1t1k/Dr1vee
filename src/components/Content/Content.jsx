@@ -5,7 +5,6 @@ import Files from "../Files/Files";
 import Folder from "../Folder/Folder";
 import useLayout from "../../context/LayoutContext";
 import useUser from "../../context/UserContext";
-
 import {
   Navigate,
   useLocation,
@@ -50,8 +49,27 @@ export default () => {
             const unsubscribe = onSnapshot(
               q,
               (querySnapshot) => {
+                var tempPath = [];
                 querySnapshot.forEach((doc) => {
-                  setPath(doc.data().path);
+                  tempPath = [doc.data().path[0]];
+                  const q = query(
+                    collection(db, "Folders"),
+                    where("id", "in", doc.data().path)
+                  );
+
+                  getDocs(q)
+                    .then((querySnapshot) => {
+                      querySnapshot.forEach((doc) => {
+                        tempPath = [
+                          ...tempPath,
+                          { id: doc.data().id, name: doc.data().name },
+                        ];
+                      });
+                    })
+                    .then((x) => {
+                      setPath(tempPath);
+                    });
+
                   setFolderID(doc.id);
 
                   const folderQuery = query(
@@ -100,9 +118,28 @@ export default () => {
       } else if (params.folderId) {
         try {
           const docRef = doc(db, "Folders", params.folderId);
+          var tempPath = [];
           const unsub = onSnapshot(docRef, (docSnap) => {
             if (docSnap.exists()) {
-              setPath(docSnap.data().path);
+              tempPath = [docSnap.data().path[0]];
+              const q = query(
+                collection(db, "Folders"),
+                where("id", "in", docSnap.data().path)
+              );
+
+              getDocs(q)
+                .then((querySnapshot) => {
+                  querySnapshot.forEach((doc) => {
+                    tempPath = [
+                      ...tempPath,
+                      { id: doc.data().id, name: doc.data().name },
+                    ];
+                  });
+                })
+                .then((x) => {
+                  setPath(tempPath);
+                });
+
               setFolderID(docSnap.id);
               const folderQuery = query(
                 collection(db, "Folders"),

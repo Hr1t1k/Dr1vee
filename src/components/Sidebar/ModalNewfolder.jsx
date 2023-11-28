@@ -54,13 +54,13 @@ function ModalNewfolder(props) {
                     visibility: false,
                     parent: folderID,
                   });
-                  var currPath = [...path, { id: docRef.id, name: folderName }];
+                  var currPath = [...path, docRef.id];
                   await updateDoc(doc(db, "Folders", docRef.id), {
                     path: currPath,
                     id: docRef.id,
                   });
                   await updateDoc(doc(db, "Folders", folderID), {
-                    folders: arrayUnion({ id: docRef.id, name: folderName }),
+                    folders: arrayUnion(docRef.id),
                   });
                   setFolderName("");
                 }}

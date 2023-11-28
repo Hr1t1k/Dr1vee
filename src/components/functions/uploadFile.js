@@ -80,7 +80,6 @@ const uploadFile = (file, fileId, parentId) => {
         await updateDoc(doc(db, "Folders", parentId), {
           files: arrayUnion({
             id: docRef.id,
-            name: fileName,
           }),
         });
       });

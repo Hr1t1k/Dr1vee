@@ -2,6 +2,8 @@ import React from "react";
 import "./folder.css";
 import MenuDots from "../MenuDots";
 import { useNavigate, useParams } from "react-router-dom";
+import RenameFolder from "./RenameFolder";
+import RenameFile from "../Files/RenameFile";
 import {
   doc,
   getDoc,
@@ -22,6 +24,7 @@ export default (props) => {
 
   return (
     <>
+      <RenameFolder folder={folder} />
       <div
         onClick={() => navigate(`/folders/${folder.id}`)}
         className={`${
