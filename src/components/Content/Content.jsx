@@ -25,6 +25,7 @@ import usePath from "../../context/PathContext";
 import ROOT_FOLDER from "../RootFolders";
 import Breadcrumb from "./Breadcrumb";
 import Layout from "./Layout";
+import { connectStorageEmulator } from "firebase/storage";
 export default () => {
   const { grid, setGrid } = useLayout();
   const { path, setPath, setFolderID, folderID } = usePath();
@@ -35,6 +36,7 @@ export default () => {
   const location = useLocation();
   const navigate = useNavigate();
   const user = localStorage.getItem("uid");
+  const [error, setError] = useState(false);
   useEffect(() => {
     setFile(["NULL"]);
     setFolder(["NULL"]);
@@ -115,77 +117,90 @@ export default () => {
             console.log(error);
           }
         } else {
-          throw new Error("Invalid URL");
+          throw new Error("Invalid URLs");
         }
       } else if (params.folderId) {
+        const docRef = doc(db, "Folders", params.folderId);
+        var tempPath = [];
         try {
-          const docRef = doc(db, "Folders", params.folderId);
-          var tempPath = [];
-          const unsub = onSnapshot(docRef, (docSnap) => {
-            if (docSnap.exists()) {
-              tempPath = [docSnap.data().path[0]];
-              setPath(docSnap.data().path);
-              const q = query(
-                collection(db, "Folders"),
-                where("id", "in", docSnap.data().path)
-              );
+          const unsub = onSnapshot(
+            docRef,
+            (docSnap) => {
+              // try {
+              if (docSnap.exists()) {
+                tempPath = [docSnap.data().path[0]];
+                setPath(docSnap.data().path);
+                const q = query(
+                  collection(db, "Folders"),
+                  where("id", "in", docSnap.data().path)
+                );
 
-              getDocs(q)
-                .then((querySnapshot) => {
-                  querySnapshot.forEach((doc) => {
-                    tempPath = [
-                      ...tempPath,
-                      { id: doc.data().id, name: doc.data().name },
-                    ];
+                getDocs(q)
+                  .then((querySnapshot) => {
+                    querySnapshot.forEach((doc) => {
+                      tempPath = [
+                        ...tempPath,
+                        { id: doc.data().id, name: doc.data().name },
+                      ];
+                    });
+                  })
+                  .then((x) => {
+                    setbreadcrumbPath(tempPath);
                   });
-                })
-                .then((x) => {
-                  setbreadcrumbPath(tempPath);
+
+                setFolderID(docSnap.id);
+                const folderQuery = query(
+                  collection(db, "Folders"),
+                  where("parent", "==", params.folderId)
+                );
+                onSnapshot(folderQuery, (folderSnap) => {
+                  var x = 0;
+
+                  folderSnap.forEach((folders) => {
+                    if (x == 0) setFolder([folders.data()]);
+                    else
+                      setFolder((prevfolder) => [
+                        ...prevfolder,
+                        folders.data(),
+                      ]);
+                    x++;
+                  });
+                  if (x == 0) {
+                    setFolder([]);
+                  }
                 });
+                const fileQuery = query(
+                  collection(db, "Files"),
+                  where("parent", "==", params.folderId)
+                );
 
-              setFolderID(docSnap.id);
-              const folderQuery = query(
-                collection(db, "Folders"),
-                where("parent", "==", params.folderId)
-              );
-              onSnapshot(folderQuery, (folderSnap) => {
-                var x = 0;
+                onSnapshot(fileQuery, (fileSnap) => {
+                  var x = 0;
 
-                folderSnap.forEach((folders) => {
-                  if (x == 0) setFolder([folders.data()]);
-                  else
-                    setFolder((prevfolder) => [...prevfolder, folders.data()]);
-                  x++;
+                  fileSnap.forEach((files) => {
+                    if (x == 0) setFile([files.data()]);
+                    else setFile((prevfile) => [...prevfile, files.data()]);
+                    x++;
+                  });
+                  if (x == 0) {
+                    setFile([]);
+                  }
                 });
-                if (x == 0) {
-                  setFolder([]);
-                }
-              });
-              const fileQuery = query(
-                collection(db, "Files"),
-                where("parent", "==", params.folderId)
-              );
-
-              onSnapshot(fileQuery, (fileSnap) => {
-                var x = 0;
-
-                fileSnap.forEach((files) => {
-                  if (x == 0) setFile([files.data()]);
-                  else setFile((prevfile) => [...prevfile, files.data()]);
-                  x++;
-                });
-                if (x == 0) {
-                  setFile([]);
-                }
-              });
-            } else {
-              // docSnap.data() will be undefined in this case
-              console.log("No such document!");
-              throw new error("invalid url");
+              } else {
+                // docSnap.data() will be undefined in this case
+                throw new Error("Invalid URLs");
+              }
+              // } catch (error) {
+              //   // console.log(error);
+              //   throw new Error("invalid url");
+              // }
+            },
+            (error) => {
+              console.log("err", error);
             }
-          });
+          );
         } catch (error) {
-          console.log(error);
+          console.log("err", error);
         }
       }
     }

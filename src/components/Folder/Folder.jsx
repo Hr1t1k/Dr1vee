@@ -3,19 +3,7 @@ import "./folder.css";
 import MenuDots from "../MenuDots";
 import { useNavigate, useParams } from "react-router-dom";
 import RenameFolder from "./RenameFolder";
-import RenameFile from "../Files/RenameFile";
-import {
-  doc,
-  getDoc,
-  getDocs,
-  updateDoc,
-  query,
-  collection,
-  where,
-  arrayUnion,
-  arrayRemove,
-} from "firebase/firestore";
-import auth, { db } from "../../../firebasecofig";
+import auth from "../../../firebasecofig";
 export default (props) => {
   const grid = props.grid;
   const folder = props.folder;

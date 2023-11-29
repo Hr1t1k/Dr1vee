@@ -43,7 +43,7 @@ export default (props) => {
                   {file.owner == auth.currentUser.uid ? "me" : file.ownerName}
                 </p>
                 <p className="d-none d-sm-grid">{file.lastModifiedDate}</p>
-                <p className="d-none d-md-grid">-</p>
+                <p className="d-none d-md-grid">{file.filesize}</p>
               </>
             )}
             <MenuDots file={file} />

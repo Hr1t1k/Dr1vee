@@ -72,7 +72,8 @@ export default () => {
               ref={inputFile}
               style={{ display: "none" }}
               onChange={(event) => {
-                uploadFile(event.target.files[0], uuidv4(), folderID, path);
+                 uploadFile(event.target.files[0], uuidv4(), folderID, path);
+               
               }}
             />
           </li>
