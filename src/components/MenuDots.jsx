@@ -5,8 +5,10 @@ import { fileDelete } from "./functions/fileDelete";
 import { downloadFile } from "./functions/downloadFile";
 import usePath from "../context/PathContext";
 import SVG from "./SVG";
-import RenameFile from "./Files/RenameFile";
-import RenameFolder from "./Folder/RenameFolder";
+import folderRestore from "./functions/restoreFolder";
+import fileRestore from "./functions/restoreFile";
+import folderDelPerm from "./functions/folderDelPerm";
+import fileDelPerm from "./functions/fileDelPerm";
 export default (props) => {
   const params = useParams();
   const { folderID } = usePath();
@@ -40,7 +42,12 @@ export default (props) => {
             <li>
               <a
                 className="dropdown-item d-flex align-items-center gap-3"
-                onClick={() => downloadFile(props.file)}
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  if (folder) folderRestore(folder);
+                  if (file) fileRestore(file);
+                }}
               >
                 <SVG
                   path={[
@@ -53,7 +60,12 @@ export default (props) => {
             <li>
               <a
                 className="dropdown-item d-flex align-items-center gap-3"
-                onClick={() => downloadFile(props.file)}
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  if (folder) folderDelPerm(folder);
+                  if (file) fileDelPerm(file);
+                }}
               >
                 <svg
                   width="24px"

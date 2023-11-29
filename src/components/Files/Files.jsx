@@ -2,6 +2,7 @@ import React from "react";
 import MenuDots from "../MenuDots";
 import "./file.css";
 import RenameFile from "./RenameFile";
+import auth from "../../../firebasecofig";
 export default (props) => {
   const grid = props.grid;
   const file = props.file;
@@ -32,8 +33,16 @@ export default (props) => {
             </div>
             {!grid && (
               <>
-                <p className="d-none d-md-grid">me</p>
-                <p className="d-none d-sm-grid">xx/xx/xxxx</p>
+                <p className="d-none d-md-flex gap-1 text-truncate text-nowrap">
+                  <img
+                    src={file.ownerPic}
+                    height="24px"
+                    width="24px"
+                    style={{ borderRadius: "50%" }}
+                  />
+                  {file.owner == auth.currentUser.uid ? "me" : file.ownerName}
+                </p>
+                <p className="d-none d-sm-grid">{file.lastModifiedDate}</p>
                 <p className="d-none d-md-grid">-</p>
               </>
             )}

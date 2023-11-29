@@ -50,6 +50,16 @@ function ModalNewfolder(props) {
                     folders: [],
                     files: [],
                     owner: auth.currentUser.uid,
+                    ownerName: auth.currentUser.displayName,
+                    ownerPic: auth.currentUser.photoURL,
+                    lastModifiedDate: new Date(Date.now()).toLocaleDateString(
+                      "en-US",
+                      {
+                        year: "numeric",
+                        month: "short",
+                        day: "numeric",
+                      }
+                    ),
                     shared: [],
                     visibility: false,
                     parent: folderID,

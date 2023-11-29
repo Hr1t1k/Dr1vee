@@ -30,6 +30,7 @@ export default () => {
   const { path, setPath, setFolderID, folderID } = usePath();
   const params = useParams();
   const [folder, setFolder] = useState(["NULL"]);
+  const [breadcrumbPath, setbreadcrumbPath] = useState([]);
   const [file, setFile] = useState(["NULL"]);
   const location = useLocation();
   const navigate = useNavigate();
@@ -51,6 +52,7 @@ export default () => {
               (querySnapshot) => {
                 var tempPath = [];
                 querySnapshot.forEach((doc) => {
+                  setPath(doc.data().path);
                   tempPath = [doc.data().path[0]];
                   const q = query(
                     collection(db, "Folders"),
@@ -67,7 +69,7 @@ export default () => {
                       });
                     })
                     .then((x) => {
-                      setPath(tempPath);
+                      setbreadcrumbPath(tempPath);
                     });
 
                   setFolderID(doc.id);
@@ -122,6 +124,7 @@ export default () => {
           const unsub = onSnapshot(docRef, (docSnap) => {
             if (docSnap.exists()) {
               tempPath = [docSnap.data().path[0]];
+              setPath(docSnap.data().path);
               const q = query(
                 collection(db, "Folders"),
                 where("id", "in", docSnap.data().path)
@@ -137,7 +140,7 @@ export default () => {
                   });
                 })
                 .then((x) => {
-                  setPath(tempPath);
+                  setbreadcrumbPath(tempPath);
                 });
 
               setFolderID(docSnap.id);
@@ -191,7 +194,7 @@ export default () => {
     <div className="content-box ps-md-4 pt-md-3  p-1 pb-0 m-2 mt-0">
       <div className="py-2 px-2 px-md-0 me-md-4 d-flex justify-content-between">
         <h4>
-          <Breadcrumb path={path} />
+          <Breadcrumb path={breadcrumbPath} />
         </h4>
         <Layout />
       </div>

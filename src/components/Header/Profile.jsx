@@ -43,7 +43,6 @@ export default () => {
               signOut(auth).then(() => {
                 localStorage.removeItem("uid");
                 localStorage.removeItem("email");
-                navigate("/");
               });
             }}
           >

@@ -53,8 +53,16 @@ export default (props) => {
         </div>
         {!grid && (
           <>
-            <p className="d-none d-md-grid">me</p>
-            <p className="d-none d-sm-grid">xx/xx/xxxx</p>
+            <p className="d-none d-md-flex gap-1 text-truncate text-nowrap">
+              <img
+                src={folder.ownerPic}
+                height="24px"
+                width="24px"
+                style={{ borderRadius: "50%" }} 
+              />
+              {folder.owner == auth.currentUser.uid ? "me" : folder.ownerName}
+            </p>
+            <p className="d-none d-sm-grid">{folder.lastModifiedDate}</p>
             <p className="d-none d-md-grid">-</p>
           </>
         )}

@@ -17,7 +17,7 @@ import {
 } from "firebase/firestore";
 import auth, { db } from "../../../firebasecofig";
 
-const uploadFile = (file, fileId, parentId) => {
+const uploadFile = (file, fileId, parentId, path) => {
   const fileName = file.name;
   const storage = getStorage();
 
@@ -65,14 +65,24 @@ const uploadFile = (file, fileId, parentId) => {
       // Upload completed successfully, now we can get the download URL
       getDownloadURL(uploadTask.snapshot.ref).then(async (downloadURL) => {
         console.log("File available at", downloadURL);
+        const date = new Date().now;
+
         const docRef = await addDoc(collection(db, "Files"), {
           name: fileName,
-          path: filePath,
+          filePath: filePath,
           owner: auth.currentUser.uid,
+          ownerName: auth.currentUser.displayName,
+          ownerPic: auth.currentUser.photoURL,
           shared: [],
           visibility: false,
           downloadURL: downloadURL,
           parent: parentId,
+          path: path,
+          lastModifiedDate: new Date(Date.now()).toLocaleDateString("en-US", {
+            year: "numeric",
+            month: "short",
+            day: "numeric",
+          }),
         });
         updateDoc(doc(db, "Files", docRef.id), {
           id: docRef.id,

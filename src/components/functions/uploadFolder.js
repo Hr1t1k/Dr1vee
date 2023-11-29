@@ -28,6 +28,13 @@ const uploadFolder = async (files, folderID, path) => {
           folders: [],
           files: [],
           owner: auth.currentUser.uid,
+          ownerName: auth.currentUser.displayName,
+          ownerPic: auth.currentUser.photoURL,
+          lastModifiedDate: new Date(Date.now()).toLocaleDateString("en-US", {
+            year: "numeric",
+            month: "short",
+            day: "numeric",
+          }),
           shared: [],
           visibility: false,
           parent: parId,
@@ -43,7 +50,7 @@ const uploadFolder = async (files, folderID, path) => {
           parId = docRef.id;
           folderPath[folderStringPath] = { id: docRef.id, path: currPath };
           if (index == folders.length - 1) {
-            uploadFile(file, uuidv4(), parId);
+            uploadFile(file, uuidv4(), parId, path);
           }
         });
       }
