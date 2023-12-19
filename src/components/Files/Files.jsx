@@ -3,9 +3,12 @@ import MenuDots from "../MenuDots";
 import "./file.css";
 import RenameFile from "./RenameFile";
 import auth from "../../../firebasecofig";
+import formatBytes from "../functions/formatSize";
+import getFileType from "../functions/getFileType";
 export default (props) => {
   const grid = props.grid;
   const file = props.file;
+
   return (
     <>
       <RenameFile file={file} />
@@ -23,10 +26,10 @@ export default (props) => {
               style={{ width: "85%" }}
             >
               <img
-                className=" m-3  p-0 "
-                width={21}
-                src="https://drive-thirdparty.googleusercontent.com/32/type/image/jpeg"
-                alt="Image"
+                className=" m-3 mx-2 m-md-3    p-0 "
+                width={18}
+                src={getFileType(file).url}
+                alt={getFileType(file).type}
                 height={18}
               ></img>
               <p className="p-0 m-0">{file.name}</p>
@@ -43,7 +46,7 @@ export default (props) => {
                   {file.owner == auth.currentUser.uid ? "me" : file.ownerName}
                 </p>
                 <p className="d-none d-sm-grid">{file.lastModifiedDate}</p>
-                <p className="d-none d-md-grid">{file.filesize}</p>
+                <p className="d-none d-md-grid">{formatBytes(file.filesize)}</p>
               </>
             )}
             <MenuDots file={file} />
@@ -53,7 +56,7 @@ export default (props) => {
               <img
                 jsaction=""
                 className=" p-3"
-                src="https://drive-thirdparty.googleusercontent.com/64/type/image/jpeg"
+                src={getFileType(file).url}
                 alt=""
               ></img>
             </div>

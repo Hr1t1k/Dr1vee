@@ -14,13 +14,17 @@ export default (props) => {
     <>
       <RenameFolder folder={folder} />
       <div
-        onClick={() => navigate(`/folders/${folder.id}`)}
+        onClick={() =>
+          params.name && params.name == "trash"
+            ? ""
+            : navigate(`/folders/${folder.id}`)
+        }
         className={`${
           grid ? "d-grid rounded-3 folder-box" : "list-header d-grid"
         }    align-items-center position-relative btn p-0 m-0 text-start`}
       >
         <div
-          className="d-flex align-items-center overflow-hidden"
+          className="d-flex align-items-center overflow-hidden "
           style={{ height: "48px", width: "90%" }}
         >
           <svg
@@ -29,7 +33,7 @@ export default (props) => {
             focusable="false"
             viewBox="0 0 24 24"
             fill="#5f6368"
-            className="m-3"
+            className=" m-3 mx-2 m-md-3    p-0 "
             style={{ flexShrink: 0 }}
           >
             <g>
@@ -46,7 +50,7 @@ export default (props) => {
                 src={folder.ownerPic}
                 height="24px"
                 width="24px"
-                style={{ borderRadius: "50%" }} 
+                style={{ borderRadius: "50%" }}
               />
               {folder.owner == auth.currentUser.uid ? "me" : folder.ownerName}
             </p>

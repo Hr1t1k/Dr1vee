@@ -28,6 +28,7 @@ import ROOT_FOLDER from "../RootFolders";
 import Breadcrumb from "./Breadcrumb";
 import Layout from "./Layout";
 import { connectStorageEmulator } from "firebase/storage";
+import InfiniteScroll from "react-infinite-scroll-component";
 export default () => {
   const { grid, setGrid } = useLayout();
   const { path, myDriveId, setMyDriveId, setPath, setFolderID, folderID } =
@@ -38,7 +39,7 @@ export default () => {
   const [file, setFile] = useState(["NULL"]);
   const location = useLocation();
   const navigate = useNavigate();
-  const user = auth.currentUser.uid;
+  const user = localStorage.getItem("uid");
   const [error, setError] = useState(false);
   const folderRef = collection(db, "Folders");
   // const [err,setErr]=useState("");
@@ -46,6 +47,7 @@ export default () => {
     setFile(["NULL"]);
     setFolder(["NULL"]);
     if (user) {
+      // Get initially mydrive id for first time
       if (myDriveId == null) {
         const mydrivequery = query(
           folderRef,
@@ -58,9 +60,11 @@ export default () => {
           });
         });
       }
+      //if in root folder
       if (params.name) {
         if (params.name in ROOT_FOLDER) {
           try {
+            //get the id for curr root folder
             const q = query(
               folderRef,
               where("id", "==", params.name),
@@ -75,11 +79,12 @@ export default () => {
                     setMyDriveId(doc.id);
                   setPath(doc.data().path);
                   tempPath = [doc.data().path[0]];
+
+                  //get the path for breadcrumb
                   const q = query(
                     folderRef,
                     where("id", "in", doc.data().path),
-                    where("owner", "==", user),
-                    orderBy("createdat")
+                    where("owner", "==", user)
                   );
 
                   getDocs(q)
@@ -97,6 +102,7 @@ export default () => {
 
                   setFolderID(doc.id);
                   var folderQuery;
+                  //query for getting all folders
                   params.name == "trash"
                     ? (folderQuery = query(
                         folderRef,
@@ -124,6 +130,8 @@ export default () => {
                     });
                     if (x == 0) setFolder([]);
                   });
+
+                  //query for getting all file
                   const fileQuery = query(
                     collection(db, "Files"),
                     and(
@@ -286,46 +294,59 @@ export default () => {
           (folder.length == 0 || folder[0] != "NULL") &&
           folder.length + file.length != 0 && (
             <>
-              {!grid && (
-                <>
-                  <div className="list-header d-grid align-items-center">
-                    <h6 className="m-0 ms-3 p-0">Name</h6>
-                    <h6 className="d-none d-md-grid m-0 p-0">Owner</h6>
-                    <h6 className="d-none d-sm-grid m-0 p-0">Last modified</h6>
-                    <h6 className="d-none d-md-grid m-0 p-0">File size</h6>
-                    <h6 className=" d-grid m-0 p-0 "></h6>
-                  </div>
-                  <hr className="m-0 p-0 w-100" />
-                </>
-              )}
-              {grid && folder.length != 0 && (
-                <div className={`my-2 mx-md-0 mx-2 `}>Folders</div>
-              )}
-              <div
-                className={` ${
-                  grid
-                    ? "container-fluid d-grid gap-md-3 gap-2 align-items-center content p-0 m-0"
-                    : ""
-                }`}
+              <InfiniteScroll
+                dataLength={docs.length} //total array size
+                next={onLoadMore} //onLoadMore callback function
+                hasMore={true} //usually there is more data indeed
+                loader={isLoading ? <Loading /> : null}
               >
-                {folder.map((folder) => {
-                  return <Folder folder={folder} key={folder.id} grid={grid} />;
-                })}
-              </div>
-              {grid && file.length != 0 && (
-                <div className="my-2 mx-md-0 mx-2">Files</div>
-              )}
-              <div
-                className={` ${
-                  grid
-                    ? "container-fluid d-grid gap-md-3 gap-2 align-items-center content p-0 m-0"
-                    : ""
-                }`}
-              >
-                {file.map((file) => {
-                  return <Files file={file} grid={grid} key={file.id} />;
-                })}
-              </div>
+                {/* DiscoveryOverview is a component where data is being displayed from Firestore (database)*/}
+
+                {!grid && (
+                  <>
+                    <div className="list-header d-grid align-items-center">
+                      <h6 className="m-0 ms-3 p-0">Name</h6>
+                      <h6 className="d-none d-md-grid m-0 p-0">Owner</h6>
+                      <h6 className="d-none d-sm-grid m-0 p-0">
+                        Last modified
+                      </h6>
+                      <h6 className="d-none d-md-grid m-0 p-0">File size</h6>
+                      <h6 className=" d-grid m-0 p-0 "></h6>
+                    </div>
+                    <hr className="m-0 p-0 w-100" />
+                  </>
+                )}
+                {grid && folder.length != 0 && (
+                  <div className={`my-2 mx-md-0 mx-2 `}>Folders</div>
+                )}
+                <div
+                  className={` ${
+                    grid
+                      ? "container-fluid d-grid gap-md-3 gap-2 align-items-center content p-0 m-0"
+                      : ""
+                  }`}
+                >
+                  {folder.map((folder) => {
+                    return (
+                      <Folder folder={folder} key={folder.id} grid={grid} />
+                    );
+                  })}
+                </div>
+                {grid && file.length != 0 && (
+                  <div className="my-2 mx-md-0 mx-2">Files</div>
+                )}
+                <div
+                  className={` ${
+                    grid
+                      ? "container-fluid d-grid gap-md-3 gap-2 align-items-center content p-0 m-0"
+                      : ""
+                  }`}
+                >
+                  {file.map((file) => {
+                    return <Files file={file} grid={grid} key={file.id} />;
+                  })}
+                </div>
+              </InfiniteScroll>
             </>
           )}
       </div>

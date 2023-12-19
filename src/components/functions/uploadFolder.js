@@ -30,6 +30,8 @@ const uploadFolder = async (files, folderID, path) => {
           owner: auth.currentUser.uid,
           ownerName: auth.currentUser.displayName,
           ownerPic: auth.currentUser.photoURL,
+          createdat: new Date(),
+          deleted: false,
           lastModifiedDate: new Date(Date.now()).toLocaleDateString("en-US", {
             year: "numeric",
             month: "short",

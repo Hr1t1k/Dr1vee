@@ -18,7 +18,10 @@ export default (file) => {
   batch.update(doc(db, "Folders", file.parent), {
     files: arrayRemove(file.id),
   });
-  batch.update(doc(db, "Files", file.id), { parent: file.oldParent });
+  batch.update(doc(db, "Files", file.id), {
+    parent: file.oldParent,
+    deleted: false,
+  });
   batch.update(doc(db, "Folders", file.oldParent), {
     files: arrayUnion(file.id),
   });

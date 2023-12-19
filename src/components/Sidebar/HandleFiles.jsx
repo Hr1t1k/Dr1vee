@@ -32,7 +32,7 @@ const uploadFile = (event) => {
   const fileName = event.target.files[0].name;
   const fileRef = ref(
     storage,
-    localStorage.getItem("uid") + "/" + path + "/" + event.target.files[0].name
+    auth.currentUser.uid + "/" + path + "/" + event.target.files[0].name
   );
   const uploadTask = uploadBytesResumable(fileRef, event.target.files[0]);
   // Listen for state changes, errors, and completion of the upload.
@@ -78,7 +78,7 @@ const uploadFile = (event) => {
         console.log("File available at", downloadURL);
         const docRef = await addDoc(collection(db, "Files"), {
           name: fileName,
-          path: localStorage.getItem("uid") + "/" + path + "/" + fileName,
+          path: auth.currentUser.uid + "/" + path + "/" + fileName,
           owner: auth.currentUser.uid,
           shared: [],
           visibility: false,

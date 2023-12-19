@@ -26,15 +26,11 @@ const fileDelete = async (file, folderID) => {
       updateDoc(docRef, {
         oldParent: folderID,
         parent: d.id,
+        deleted: true,
       });
       const trashRef = doc(db, "Folders", d.id);
 
       updateDoc(trashRef, {
-        files: arrayUnion(file.id),
-      }).catch((error) => {
-        console.log("error", error);
-      });
-      updateDoc(doc(db, "Folders", "deleted"), {
         files: arrayUnion(file.id),
       }).catch((error) => {
         console.log("error", error);

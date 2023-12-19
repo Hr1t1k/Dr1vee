@@ -22,7 +22,7 @@ const router = createBrowserRouter([
       {
         path: "/folders/:folderId",
         element: <Content />,
-        errorElement: <Error />,
+        // errorElement: <Error />,
       },
     ],
   },

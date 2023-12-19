@@ -17,18 +17,7 @@ import {
 } from "firebase/firestore";
 import auth, { db } from "../../../firebasecofig";
 
-function formatBytes(bytes, decimals = 2) {
-    if (!+bytes) return '0 Bytes'
-
-    const k = 1024
-    const dm = decimals < 0 ? 0 : decimals
-    const sizes = ['Bytes', 'KiB', 'MiB', 'GiB', 'TiB', 'PiB', 'EiB', 'ZiB', 'YiB']
-
-    const i = Math.floor(Math.log(bytes) / Math.log(k))
-
-    return `${parseFloat((bytes / Math.pow(k, i)).toFixed(dm))} ${sizes[i]}`
-}
-const uploadFile = (file, fileId, parentId, path) => {
+const uploadFile = (file, fileId, parentId, path, setSize) => {
   const fileName = file.name;
   const storage = getStorage();
 
@@ -74,6 +63,7 @@ const uploadFile = (file, fileId, parentId, path) => {
     },
     () => {
       // Upload completed successfully, now we can get the download URL
+      setSize((size) => size + file.size);
       getDownloadURL(uploadTask.snapshot.ref).then(async (downloadURL) => {
         console.log("File available at", downloadURL);
         const date = new Date().now;
@@ -89,7 +79,8 @@ const uploadFile = (file, fileId, parentId, path) => {
           downloadURL: downloadURL,
           parent: parentId,
           path: path,
-          filesize:formatBytes(file.size),
+          filesize: file.size,
+          deleted: false,
           lastModifiedDate: new Date(Date.now()).toLocaleDateString("en-US", {
             year: "numeric",
             month: "short",

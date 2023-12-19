@@ -8,9 +8,20 @@ import {
 } from "firebase/firestore";
 import usePath from "../../context/PathContext";
 import auth, { db } from "../../../firebasecofig";
+import { useNavigate } from "react-router-dom";
 function ModalNewfolder(props) {
   const [folderName, setFolderName] = useState("");
-  const { path, folderID } = usePath();
+  const { path, folderID, setSize, myDriveId } = usePath();
+  var uploadPath;
+  const navigate = useNavigate();
+  var uploadFolderId;
+  if (path[0] && path[0].id == "my-drive") {
+    uploadFolderId = folderID;
+    uploadPath = path;
+  } else {
+    uploadPath = [{ id: "my-drive", name: "My drive" }];
+    uploadFolderId = myDriveId;
+  }
   return (
     <div
       className="modal fade"
@@ -52,6 +63,8 @@ function ModalNewfolder(props) {
                     owner: auth.currentUser.uid,
                     ownerName: auth.currentUser.displayName,
                     ownerPic: auth.currentUser.photoURL,
+                    deleted: false,
+                    createdat: new Date(),
                     lastModifiedDate: new Date(Date.now()).toLocaleDateString(
                       "en-US",
                       {
@@ -62,17 +75,19 @@ function ModalNewfolder(props) {
                     ),
                     shared: [],
                     visibility: false,
-                    parent: folderID,
+                    parent: uploadFolderId,
                   });
-                  var currPath = [...path, docRef.id];
+                  var currPath = [...uploadPath, docRef.id];
                   await updateDoc(doc(db, "Folders", docRef.id), {
                     path: currPath,
                     id: docRef.id,
                   });
-                  await updateDoc(doc(db, "Folders", folderID), {
+                  await updateDoc(doc(db, "Folders", uploadFolderId), {
                     folders: arrayUnion(docRef.id),
                   });
                   setFolderName("");
+                  if (path[0] && path[0].id != "my-drive")
+                    navigate("/my-drive");
                 }}
                 data-bs-dismiss="modal"
               >

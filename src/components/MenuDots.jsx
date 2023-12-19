@@ -9,9 +9,10 @@ import folderRestore from "./functions/restoreFolder";
 import fileRestore from "./functions/restoreFile";
 import folderDelPerm from "./functions/folderDelPerm";
 import fileDelPerm from "./functions/fileDelPerm";
+
 export default (props) => {
   const params = useParams();
-  const { folderID } = usePath();
+  const { setSize, folderID } = usePath();
   const folder = props.folder;
   const file = props.file;
   return (
@@ -64,7 +65,7 @@ export default (props) => {
                   e.preventDefault();
                   e.stopPropagation();
                   if (folder) folderDelPerm(folder);
-                  if (file) fileDelPerm(file);
+                  if (file) fileDelPerm(file, setSize);
                 }}
               >
                 <svg

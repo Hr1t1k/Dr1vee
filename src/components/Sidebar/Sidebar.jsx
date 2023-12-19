@@ -1,10 +1,33 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { NavLink, Navigate, useNavigate } from "react-router-dom";
 import "./sidebar.css";
 import CompanyLogo from "../Header/CompanyLogo";
 import NewBtn from "./NewBtn";
+import usePath from "../../context/PathContext";
+import auth, { db } from "../../../firebasecofig";
+import formatBytes from "../functions/formatSize";
+import {
+  collection,
+  getAggregateFromServer,
+  query,
+  sum,
+  where,
+} from "firebase/firestore";
 export default () => {
+  const { size, setSize } = usePath();
   const navigate = useNavigate();
+  useEffect(() => {
+    const q = query(
+      collection(db, "Files"),
+      where("owner", "==", auth.currentUser.uid)
+    );
+
+    getAggregateFromServer(q, {
+      totalsize: sum("filesize"),
+    }).then((val) => {
+      setSize(val.data().totalsize);
+    });
+  }, []);
   return (
     <>
       <div className="sidebar overflow-x-hidden">
@@ -382,9 +405,12 @@ export default () => {
                   aria-valuemax="100"
                   style={{ height: "4px" }}
                 >
-                  <div className="progress-bar" style={{ width: "25%" }}></div>
+                  <div
+                    className="progress-bar"
+                    style={{ width: `${(size / 1000000000) * 100}%` }}
+                  ></div>
                 </div>
-                <p className="sidebarItems">x GB of y GB used</p>
+                <p className="sidebarItems">{formatBytes(size)} of 1 GB used</p>
               </div>
               <a>
                 <button

@@ -14,7 +14,7 @@ export default () => {
       >
         <>
           <img
-            src={localStorage.getItem("photoURL")}
+            src={auth.currentUser.photoURL}
             alt="mdo"
             width="32"
             height="32"

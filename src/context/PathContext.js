@@ -4,6 +4,8 @@ export const PathContext = createContext({
   setPath: () => {},
   folderID: null,
   setFolderID: () => {},
+  myDriveId: null,
+  setMyDriveId: () => {},
 });
 export const PathProvider = PathContext.Provider;
 export default function usePath() {

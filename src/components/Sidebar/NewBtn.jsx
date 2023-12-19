@@ -6,12 +6,23 @@ import usePath from "../../context/PathContext";
 import uploadFolder from "../functions/uploadFolder";
 import uploadFile from "../functions/uploadFile";
 import { v4 as uuidv4 } from "uuid";
+import { useNavigate } from "react-router-dom";
 
 export default () => {
   const inputFile = useRef(null);
   const inputFolder = useRef(null);
   const storage = getStorage();
-  const { path, folderID } = usePath();
+  const navigate = useNavigate();
+  const { path, folderID, setSize, myDriveId } = usePath();
+  var uploadPath;
+  var uploadFolderId;
+  if (path[0] && path[0].id == "my-drive") {
+    uploadFolderId = folderID;
+    uploadPath = path;
+  } else {
+    uploadPath = [{ id: "my-drive", name: "My drive" }];
+    uploadFolderId = myDriveId;
+  }
   return (
     <>
       <ModalNewfolder />
@@ -72,8 +83,15 @@ export default () => {
               ref={inputFile}
               style={{ display: "none" }}
               onChange={(event) => {
-                 uploadFile(event.target.files[0], uuidv4(), folderID, path);
-               
+                if (event.target.files[0])
+                  uploadFile(
+                    event.target.files[0],
+                    uuidv4(),
+                    uploadFolderId,
+                    uploadPath,
+                    setSize
+                  );
+                event.target.value = "";
               }}
             />
           </li>
@@ -99,7 +117,10 @@ export default () => {
               ref={inputFolder}
               style={{ display: "none" }}
               onChange={(event) => {
-                uploadFolder(event.target.files, folderID, path);
+                if (event.target.files)
+                  uploadFolder(event.target.files, uploadFolderId, uploadPath);
+                event.target.value = null;
+                // if (path[0] && path[0].id != "my-drive") navigate("/my-drive");
               }}
             />
           </li>
