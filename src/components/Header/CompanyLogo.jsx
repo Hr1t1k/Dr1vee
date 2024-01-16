@@ -3,7 +3,7 @@ import DriveSVG from "./DriveSVG";
 import "../../App.css";
 export default () => {
   return (
-    <div className="logo ms-md-3">
+    <div className="d-none d-sm-block logo ms-md-3">
       <a
         href="/"
         className="d-flex align-items-center mb-0  link-body-emphasis text-decoration-none"

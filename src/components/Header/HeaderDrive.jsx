@@ -9,14 +9,10 @@ export default () => {
     <>
       <header className="d-flex align-items-center">
         <HeaderMinimizedRight />
-        <div
-          className="container-fluid d-grid gap-0 align-items-center"
-          style={{ gridTemplateColumns: "1fr 5fr" }}
-        >
+        <div className="h container-fluid d-grid gap-0 align-items-center">
           <CompanyLogo />
           <div className="d-flex align-items-center justify-content-between">
             <Search />
-
             <Profile />
           </div>
         </div>
