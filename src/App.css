@@ -7,7 +7,13 @@
         padding-right: 10px !important;
     }
 }
-
+ol{
+    list-style-type: none;
+    padding:0px !important;
+}
+.search-items:hover{
+    background-color: darkgrey;
+}
 .body{
     background-color: rgb(247, 249, 252);
     max-height: 100vh;

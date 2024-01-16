@@ -18,7 +18,10 @@ const router = createBrowserRouter([
         element: <Content />,
         // errorElement: <Error />,
       },
-
+      {
+        path: "/search/:search",
+        element: <Content />,
+      },
       {
         path: "/folders/:folderId",
         element: <Content />,

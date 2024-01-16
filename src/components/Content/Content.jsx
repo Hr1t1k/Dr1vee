@@ -252,6 +252,47 @@ export default () => {
         } catch (error) {
           console.log("err", error);
         }
+      } else {
+        setbreadcrumbPath([{ name: "Search Results" }]);
+        const folderQuery = query(
+          folderRef,
+          where("name", ">=", params.search),
+          where("name", "<", params.search + "\uf8ff"),
+          // where("name", "<=", "\uf8ff", params.search),
+          where("owner", "==", user),
+          where("deleted", "==", false)
+        );
+        onSnapshot(folderQuery, (folderSnap) => {
+          var x = 0;
+
+          folderSnap.forEach((folders) => {
+            if (x == 0) setFolder([folders.data()]);
+            else setFolder((prevfolder) => [...prevfolder, folders.data()]);
+            x++;
+          });
+          if (x == 0) {
+            setFolder([]);
+          }
+        });
+        const fileQuery = query(
+          collection(db, "Files"),
+          where("parent", "==", params.search),
+          where("owner", "==", user),
+          where("deleted", "==", false)
+        );
+
+        onSnapshot(fileQuery, (fileSnap) => {
+          var x = 0;
+
+          fileSnap.forEach((files) => {
+            if (x == 0) setFile([files.data()]);
+            else setFile((prevfile) => [...prevfile, files.data()]);
+            x++;
+          });
+          if (x == 0) {
+            setFile([]);
+          }
+        });
       }
     }
   }, [location.pathname]);

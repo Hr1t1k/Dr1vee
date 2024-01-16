@@ -118,7 +118,12 @@ export default () => {
               style={{ display: "none" }}
               onChange={(event) => {
                 if (event.target.files)
-                  uploadFolder(event.target.files, uploadFolderId, uploadPath);
+                  uploadFolder(
+                    event.target.files,
+                    uploadFolderId,
+                    uploadPath,
+                    setSize
+                  );
                 event.target.value = null;
                 // if (path[0] && path[0].id != "my-drive") navigate("/my-drive");
               }}

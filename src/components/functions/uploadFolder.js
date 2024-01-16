@@ -8,7 +8,7 @@ import {
 } from "firebase/firestore";
 import auth, { db } from "../../../firebasecofig";
 import uploadFile from "./uploadFile";
-const uploadFolder = async (files, folderID, path) => {
+const uploadFolder = async (files, folderID, path, setSize) => {
   var folderPath = {};
   var file;
   for await (file of files) {
@@ -52,7 +52,7 @@ const uploadFolder = async (files, folderID, path) => {
           parId = docRef.id;
           folderPath[folderStringPath] = { id: docRef.id, path: currPath };
           if (index == folders.length - 1) {
-            uploadFile(file, uuidv4(), parId, path);
+            uploadFile(file, uuidv4(), parId, path, setSize);
           }
         });
       }

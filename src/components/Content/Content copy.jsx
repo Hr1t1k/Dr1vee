@@ -28,7 +28,6 @@ import ROOT_FOLDER from "../RootFolders";
 import Breadcrumb from "./Breadcrumb";
 import Layout from "./Layout";
 import { connectStorageEmulator } from "firebase/storage";
-import InfiniteScroll from "react-infinite-scroll-component";
 export default () => {
   const { grid, setGrid } = useLayout();
   const { path, myDriveId, setMyDriveId, setPath, setFolderID, folderID } =
@@ -39,15 +38,15 @@ export default () => {
   const [file, setFile] = useState(["NULL"]);
   const location = useLocation();
   const navigate = useNavigate();
-  const user = localStorage.getItem("uid");
+  const user = auth.currentUser.uid;
   const [error, setError] = useState(false);
   const folderRef = collection(db, "Folders");
+  var q, folderQuery, fileQuery;
   // const [err,setErr]=useState("");
   useEffect(() => {
     setFile(["NULL"]);
     setFolder(["NULL"]);
     if (user) {
-      // Get initially mydrive id for first time
       if (myDriveId == null) {
         const mydrivequery = query(
           folderRef,
@@ -60,33 +59,29 @@ export default () => {
           });
         });
       }
-      //if in root folder
+
       if (params.name) {
         if (params.name in ROOT_FOLDER) {
           try {
-            //get the id for curr root folder
-            const q = query(
+            const docRef = query(
               folderRef,
               where("id", "==", params.name),
               where("owner", "==", user)
             );
-            const unsubscribe = onSnapshot(
-              q,
-              (querySnapshot) => {
-                var tempPath = [];
-                querySnapshot.forEach((doc) => {
+            const unsubscribe = onSnapshot(docRef, (docSnap) => {
+              var tempPath = [];
+              docSnap.forEach(
+                (doc) => {
                   if (params.name == "my-drive" && myDriveId == null)
                     setMyDriveId(doc.id);
                   setPath(doc.data().path);
                   tempPath = [doc.data().path[0]];
-
-                  //get the path for breadcrumb
-                  const q = query(
+                  q = query(
                     folderRef,
                     where("id", "in", doc.data().path),
-                    where("owner", "==", user)
+                    where("owner", "==", user),
+                    orderBy("createdat")
                   );
-
                   getDocs(q)
                     .then((querySnapshot) => {
                       querySnapshot.forEach((doc) => {
@@ -101,63 +96,12 @@ export default () => {
                     });
 
                   setFolderID(doc.id);
-                  var folderQuery;
-                  //query for getting all folders
-                  params.name == "trash"
-                    ? (folderQuery = query(
-                        folderRef,
-                        where("parent", "==", doc.id),
-                        where("owner", "==", user),
-                        where("deleted", "==", true)
-                      ))
-                    : (folderQuery = query(
-                        folderRef,
-                        where("parent", "==", doc.id),
-                        where("owner", "==", user),
-                        where("deleted", "==", false)
-                      ));
-                  onSnapshot(folderQuery, (folderSnap) => {
-                    var x = 0;
-                    folderSnap.forEach((folders) => {
-                      if (x == 0) setFolder([folders.data()]);
-                      else
-                        setFolder((prevFolder) => [
-                          ...prevFolder,
-                          folders.data(),
-                        ]);
-
-                      x++;
-                    });
-                    if (x == 0) setFolder([]);
-                  });
-
-                  //query for getting all file
-                  const fileQuery = query(
-                    collection(db, "Files"),
-                    and(
-                      where("parent", "==", doc.id),
-                      where("owner", "==", user),
-                      or(
-                        where("deleted", "==", false),
-                        where("parent", "==", "trash")
-                      )
-                    )
-                  );
-                  onSnapshot(fileQuery, (fileSnap) => {
-                    var x = 0;
-                    fileSnap.forEach((files) => {
-                      if (x == 0) setFile([files.data()]);
-                      else setFile((prevfiles) => [...prevfiles, files.data()]);
-                      x++;
-                    });
-                    if (x == 0) setFile([]);
-                  });
-                });
-              },
-              (error) => {
-                console.log(error);
-              }
-            );
+                },
+                (error) => {
+                  console.log(error);
+                }
+              );
+            });
           } catch (error) {
             console.log(error);
           }
@@ -165,102 +109,91 @@ export default () => {
           throw new Error("Invalid URLs");
         }
       } else if (params.folderId) {
-        // const docRef = query(
-        //   collection(db, "Folders"),
-        //   where("id", "==", params.folderId)
-        //   // where("owner", "==", user)
-        // );
         const docRef = doc(db, "Folders", params.folderId);
         var tempPath = [];
-        try {
-          const unsub = onSnapshot(
-            docRef,
-            (docSnap) => {
-              // try {
-              var cnt = 0;
-              if (docSnap.exists()) {
-                // if (docSnap.data().deleted && docSnap.data().deleted == true)
-                //   navigate("/trash");
-                cnt++;
-                tempPath = [docSnap.data().path[0]];
-                setPath(docSnap.data().path);
-                const q = query(
-                  folderRef,
-                  where("id", "in", docSnap.data().path),
-                  where("owner", "==", user),
-                  orderBy("createdat")
-                );
-
-                getDocs(q)
-                  .then((querySnapshot) => {
-                    querySnapshot.forEach((doc) => {
-                      if (doc.data().deleted == true) navigate("/trash");
-                      tempPath = [
-                        ...tempPath,
-                        { id: doc.data().id, name: doc.data().name },
-                      ];
-                    });
-                  })
-                  .then((x) => {
-                    setbreadcrumbPath(tempPath);
-                  });
-
-                setFolderID(docSnap.id);
-                const folderQuery = query(
-                  folderRef,
-                  where("parent", "==", params.folderId),
-                  where("owner", "==", user),
-                  where("deleted", "==", false)
-                );
-                onSnapshot(folderQuery, (folderSnap) => {
-                  var x = 0;
-
-                  folderSnap.forEach((folders) => {
-                    if (x == 0) setFolder([folders.data()]);
-                    else
-                      setFolder((prevfolder) => [
-                        ...prevfolder,
-                        folders.data(),
-                      ]);
-                    x++;
-                  });
-                  if (x == 0) {
-                    setFolder([]);
-                  }
-                });
-                const fileQuery = query(
-                  collection(db, "Files"),
-                  where("parent", "==", params.folderId),
-                  where("owner", "==", user),
-                  where("deleted", "==", false)
-                );
-
-                onSnapshot(fileQuery, (fileSnap) => {
-                  var x = 0;
-
-                  fileSnap.forEach((files) => {
-                    if (x == 0) setFile([files.data()]);
-                    else setFile((prevfile) => [...prevfile, files.data()]);
-                    x++;
-                  });
-                  if (x == 0) {
-                    setFile([]);
-                  }
-                });
-              } else {
-                throw new Error("Invalid URL");
-              }
-            },
-            (error) => {
-              console.log("Er", error);
-              setError(error);
-              throw error;
-            }
-          );
-        } catch (error) {
-          console.log("err", error);
-        }
+        const unsub = onSnapshot(docRef, (docSnap) => {
+          // try {
+          var cnt = 0;
+          if (docSnap.exists()) {
+            // if (docSnap.data().deleted && docSnap.data().deleted == true)
+            //   navigate("/trash");
+            cnt++;
+            tempPath = [docSnap.data().path[0]];
+            setPath(docSnap.data().path);
+            q = query(
+              folderRef,
+              where("id", "in", docSnap.data().path),
+              where("owner", "==", user),
+              orderBy("createdat")
+            );
+            setFolderID(docSnap.id);
+          }
+        });
+      } else {
+        setbreadcrumbPath([{ name: "Search Results" }]);
+        const folderQuery = query(folderRef);
       }
+      if (params.name) {
+        params.name == "trash"
+          ? (folderQuery = query(
+              folderRef,
+              where("parent", "==", doc.id),
+              where("owner", "==", user),
+              where("deleted", "==", true)
+            ))
+          : (folderQuery = query(
+              folderRef,
+              where("parent", "==", doc.id),
+              where("owner", "==", user),
+              where("deleted", "==", false)
+            ));
+
+        fileQuery = query(
+          collection(db, "Files"),
+          and(
+            where("parent", "==", doc.id),
+            where("owner", "==", user),
+            or(where("deleted", "==", false), where("parent", "==", "trash"))
+          )
+        );
+      } else if (params.folderId) {
+        folderQuery = query(
+          folderRef,
+          where("parent", "==", params.folderId),
+          where("owner", "==", user),
+          where("deleted", "==", false)
+        );
+        fileQuery = query(
+          collection(db, "Files"),
+          where("parent", "==", params.folderId),
+          where("owner", "==", user),
+          where("deleted", "==", false)
+        );
+      }
+      onSnapshot(folderQuery, (folderSnap) => {
+        var x = 0;
+
+        folderSnap.forEach((folders) => {
+          if (x == 0) setFolder([folders.data()]);
+          else setFolder((prevfolder) => [...prevfolder, folders.data()]);
+          x++;
+        });
+        if (x == 0) {
+          setFolder([]);
+        }
+      });
+      onSnapshot(fileQuery, (fileSnap) => {
+        var x = 0;
+
+        fileSnap.forEach((files) => {
+          if (x == 0) setFile([files.data()]);
+          else setFile((prevfile) => [...prevfile, files.data()]);
+          x++;
+        });
+        if (x == 0) {
+          setFile([]);
+        }
+      });
     }
   }, [location.pathname]);
   if (error) {
@@ -294,59 +227,46 @@ export default () => {
           (folder.length == 0 || folder[0] != "NULL") &&
           folder.length + file.length != 0 && (
             <>
-              <InfiniteScroll
-                dataLength={docs.length} //total array size
-                next={onLoadMore} //onLoadMore callback function
-                hasMore={true} //usually there is more data indeed
-                loader={isLoading ? <Loading /> : null}
+              {!grid && (
+                <>
+                  <div className="list-header d-grid align-items-center">
+                    <h6 className="m-0 ms-3 p-0">Name</h6>
+                    <h6 className="d-none d-md-grid m-0 p-0">Owner</h6>
+                    <h6 className="d-none d-sm-grid m-0 p-0">Last modified</h6>
+                    <h6 className="d-none d-md-grid m-0 p-0">File size</h6>
+                    <h6 className=" d-grid m-0 p-0 "></h6>
+                  </div>
+                  <hr className="m-0 p-0 w-100" />
+                </>
+              )}
+              {grid && folder.length != 0 && (
+                <div className={`my-2 mx-md-0 mx-2 `}>Folders</div>
+              )}
+              <div
+                className={` ${
+                  grid
+                    ? "container-fluid d-grid gap-md-3 gap-2 align-items-center content p-0 m-0"
+                    : ""
+                }`}
               >
-                {/* DiscoveryOverview is a component where data is being displayed from Firestore (database)*/}
-
-                {!grid && (
-                  <>
-                    <div className="list-header d-grid align-items-center">
-                      <h6 className="m-0 ms-3 p-0">Name</h6>
-                      <h6 className="d-none d-md-grid m-0 p-0">Owner</h6>
-                      <h6 className="d-none d-sm-grid m-0 p-0">
-                        Last modified
-                      </h6>
-                      <h6 className="d-none d-md-grid m-0 p-0">File size</h6>
-                      <h6 className=" d-grid m-0 p-0 "></h6>
-                    </div>
-                    <hr className="m-0 p-0 w-100" />
-                  </>
-                )}
-                {grid && folder.length != 0 && (
-                  <div className={`my-2 mx-md-0 mx-2 `}>Folders</div>
-                )}
-                <div
-                  className={` ${
-                    grid
-                      ? "container-fluid d-grid gap-md-3 gap-2 align-items-center content p-0 m-0"
-                      : ""
-                  }`}
-                >
-                  {folder.map((folder) => {
-                    return (
-                      <Folder folder={folder} key={folder.id} grid={grid} />
-                    );
-                  })}
-                </div>
-                {grid && file.length != 0 && (
-                  <div className="my-2 mx-md-0 mx-2">Files</div>
-                )}
-                <div
-                  className={` ${
-                    grid
-                      ? "container-fluid d-grid gap-md-3 gap-2 align-items-center content p-0 m-0"
-                      : ""
-                  }`}
-                >
-                  {file.map((file) => {
-                    return <Files file={file} grid={grid} key={file.id} />;
-                  })}
-                </div>
-              </InfiniteScroll>
+                {folder.map((folder) => {
+                  return <Folder folder={folder} key={folder.id} grid={grid} />;
+                })}
+              </div>
+              {grid && file.length != 0 && (
+                <div className="my-2 mx-md-0 mx-2">Files</div>
+              )}
+              <div
+                className={` ${
+                  grid
+                    ? "container-fluid d-grid gap-md-3 gap-2 align-items-center content p-0 m-0"
+                    : ""
+                }`}
+              >
+                {file.map((file) => {
+                  return <Files file={file} grid={grid} key={file.id} />;
+                })}
+              </div>
             </>
           )}
       </div>

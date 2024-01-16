@@ -2,19 +2,6 @@ import React from "react";
 export default () => {
   return (
     <ul className="navbar-nav flex-row d-lg-none">
-      {/* <li className="nav-item text-nowrap">
-        <button
-          className="nav-link px-3 text-white"
-          type="button"
-          data-bs-toggle="collapse"
-          data-bs-target="#navbarSearch"
-          aria-controls="navbarSearch"
-          aria-expanded="false"
-          aria-label="Toggle search"
-        >
-          Search
-        </button>
-      </li> */}
       <li className="nav-item text-nowrap">
         <button
           className="nav-link ps-3 text-white"

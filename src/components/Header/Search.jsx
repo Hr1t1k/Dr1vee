@@ -1,11 +1,19 @@
 import React, { useState } from "react";
 import "./search.css";
+import { useNavigate } from "react-router-dom";
+import TRY from "./TRY";
 export default () => {
   const [searchText, setSearchText] = useState("");
   const [erase, setErase] = useState(false);
+  const navigate = useNavigate();
   return (
     <>
-      <form
+      <TRY />
+      {/* <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          navigate(`/search/${searchText}`);
+        }}
         className="d-flex  align-items-center w-100 h-5 m-2 ps-1 pe-4 input-group input-group-lg "
         style={{
           borderRadius: "70px",
@@ -64,7 +72,7 @@ export default () => {
             <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8 2.146 2.854Z" />
           </svg>
         )}
-      </form>
+      </form> */}
     </>
   );
 };
