@@ -1,10 +1,17 @@
 import React, { useState, useRef } from "react";
 import { useInstantSearch, useSearchBox } from "react-instantsearch";
+import { useNavigate } from "react-router-dom";
 
-export default function CustomSearchBox({ focused, setFocused }) {
+export default function CustomSearchBox({
+  focused,
+  setFocused,
+  visible,
+  setVisible,
+}) {
+  const navigate = useNavigate();
   const { query, refine } = useSearchBox();
   const { status } = useInstantSearch();
-  const [inputValue, setInputValue] = useState(query);
+  const [inputValue, setInputValue] = useState("");
   const inputRef = useRef(null);
   const isSearchStalled = status === "stalled";
 
@@ -27,11 +34,13 @@ export default function CustomSearchBox({ focused, setFocused }) {
         if (inputRef.current) {
           inputRef.current.blur();
         }
+        if (inputValue.trim() !== "") navigate(`/search/${inputValue}`);
       }}
       onReset={(event) => {
         event.preventDefault();
         event.stopPropagation();
         setQuery("");
+        setVisible(false);
         if (inputRef.current) {
           inputRef.current.focus();
         }
@@ -40,7 +49,7 @@ export default function CustomSearchBox({ focused, setFocused }) {
         focused && "shadow-sm"
       } align-items-center w-100 h-5 m-2 ps-1 pe-4 input-group input-group-lg `}
       style={{
-        borderRadius: focused ? "30px 30px 0px 0px" : "70px",
+        borderRadius: focused && visible ? "30px 30px 0px 0px" : "70px",
         border: "1px solid transparent",
         maxWidth: "680px",
         backgroundColor: focused ? "white" : "rgb(237, 242, 252)",
@@ -79,6 +88,9 @@ export default function CustomSearchBox({ focused, setFocused }) {
         value={inputValue}
         onChange={(event) => {
           setQuery(event.currentTarget.value);
+          event.currentTarget.value.trim() === ""
+            ? setVisible(false)
+            : setVisible(true);
         }}
         // autoFocus
       />
@@ -102,7 +114,6 @@ export default function CustomSearchBox({ focused, setFocused }) {
           <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8 2.146 2.854Z" />
         </svg>
       </button>
-      {/* <span hidden={!isSearchStalled}>Searching…</span> */}
     </form>
   );
 }

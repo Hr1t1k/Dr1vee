@@ -24,7 +24,7 @@ ol{
         }
 /* Header */
 .search-items:hover{
-    background-color: darkgrey;
+    background-color: rgb(212, 208, 208);
 }
 .body{
     background-color: rgb(247, 249, 252);

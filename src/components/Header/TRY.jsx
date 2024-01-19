@@ -1,7 +1,17 @@
 import algoliasearch from "algoliasearch/lite";
-import { InstantSearch, SearchBox, Hits, Highlight } from "react-instantsearch";
+import {
+  InstantSearch,
+  SearchBox,
+  Hits,
+  Highlight,
+  Configure,
+  Index,
+} from "react-instantsearch";
+import auth from "../../../firebasecofig";
 import CustomSearchBox from "./CustomeSearchBox";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import getFileType from "../functions/getFileType";
 
 const searchClient = algoliasearch(
   "LWBUR1VPEF",
@@ -13,17 +23,35 @@ function Hit({ hit }) {
 }
 
 export default () => {
+  const [visible, setVisible] = useState(false);
+  const navigate = useNavigate();
   const [focused, setFocused] = useState(false);
+  const currentUser = auth.currentUser.uid;
   return (
     <div
       className="search-bar d-flex w-100 h-5 input-group input-group-lg "
       style={{ maxWidth: "680px", position: "relative" }}
     >
-      <InstantSearch searchClient={searchClient} indexName="Folders">
-        <CustomSearchBox focused={focused} setFocused={setFocused} />
+      <InstantSearch
+        searchClient={searchClient}
+        indexName="Folders"
+        initialUiState={{
+          ["Files"]: {
+            query: "",
+            page: 0,
+          },
+        }}
+      >
+        <Configure filters={`owner:${currentUser}`} />
+        <CustomSearchBox
+          focused={focused}
+          setFocused={setFocused}
+          visible={visible}
+          setVisible={setVisible}
+        />
         <div
-          className={`search-results overflow-y-auto z-3 mx-2 shadow-sm rounded-bottom-5 w-88 ${
-            !focused && "d-none"
+          className={`search-results overflow-y-auto z-1 mx-2 shadow-sm rounded-bottom-5 w-88 ${
+            (!focused || !visible) && "d-none"
           }`}
           style={{
             position: "absolute",
@@ -36,33 +64,61 @@ export default () => {
             maxHeight: "300px",
           }}
         >
-          {/* <Hits hitComponent={Hit} /> */}
+          <Configure hitsPerPage={5} />
           <Hits
             hitComponent={({ hit, sendEvent }) => (
-              <div
-                className="search-items d-flex  align-items-center"
-                style={{ height: "40px" }}
-                onClick={() => sendEvent("click", hit, "Product Clicked")}
-              >
-                {/* <h2>{hit && hit.name && <Highlight hit={hit} />}</h2> */}
-                <svg
-                  height="24px"
-                  width="24px"
-                  focusable="false"
-                  viewBox="0 0 24 24"
-                  fill="#5f6368"
-                  className=" m-3 mx-2 m-md-3    p-0 "
-                  style={{ flexShrink: 0 }}
+              <>
+                <div
+                  className="search-items d-flex  align-items-center"
+                  style={{ height: "40px" }}
+                  onMouseDown={() => navigate(`/folders/${hit.id}`)}
                 >
-                  <g>
-                    <path d="M10 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z"></path>
-                    <path d="M0 0h24v24H0z" fill="none"></path>
-                  </g>
-                </svg>
-                <p className="">{hit.name}</p>
-              </div>
+                  <svg
+                    height="24px"
+                    width="24px"
+                    focusable="false"
+                    viewBox="0 0 24 24"
+                    fill="#5f6368"
+                    className=" m-3 mx-2 m-md-3    p-0 "
+                    style={{ flexShrink: 0 }}
+                  >
+                    <g>
+                      <path d="M10 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z"></path>
+                      <path d="M0 0h24v24H0z" fill="none"></path>
+                    </g>
+                  </svg>
+
+                  <p className="">
+                    <Highlight attribute="name" hit={hit} />
+                  </p>
+                </div>
+              </>
             )}
           />
+          <Index indexName="Files">
+            <Configure hitsPerPage={5} />
+            <Hits
+              hitComponent={({ hit, sendEvent }) => (
+                <>
+                  <div
+                    className="search-items d-flex  align-items-center"
+                    style={{ height: "40px" }}
+                  >
+                    <img
+                      className=" m-3 mx-2 m-md-3    p-0 "
+                      width={18}
+                      src={getFileType(hit).url}
+                      alt={getFileType(hit).type}
+                      height={18}
+                    ></img>
+                    <p className="">
+                      <Highlight attribute="name" hit={hit} />
+                    </p>
+                  </div>
+                </>
+              )}
+            />
+          </Index>
           ;
         </div>
       </InstantSearch>
