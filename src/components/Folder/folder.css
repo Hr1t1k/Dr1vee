@@ -1,0 +1,27 @@
+.folder-box{
+    height: 48px !important;
+    max-height: 48px !important;
+    background-color:rgb(242, 246, 252);
+    
+}
+
+.folder-box:hover{
+    background-color: #e8eaed;
+}
+.three-dots{
+    border-radius: 50% !important;
+    cursor: pointer;
+    position:absolute;
+    
+    top: 12px;
+    right:4px;
+}
+.three-dots:hover{
+    background-color:rgba(163, 165, 168, 0.8) !important;
+}
+.list{
+    height: 48px !important;
+}
+.list:hover{
+    background-color: rgb(242, 246, 252) !important;
+}

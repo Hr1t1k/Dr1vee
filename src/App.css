@@ -7,7 +7,25 @@
         padding-right: 10px !important;
     }
 }
-
+ol{
+    list-style-type: none;
+    padding:0px !important;
+}
+/* Header  */
+        .h {
+            display: grid;
+            grid-template-columns: 1fr 5fr;
+        }
+    
+        @media (max-width: 576px) {
+            .h {
+                grid-template-columns: 1fr;
+            }
+        }
+/* Header */
+.search-items:hover{
+    background-color: rgb(212, 208, 208);
+}
 .body{
     background-color: rgb(247, 249, 252);
     max-height: 100vh;
@@ -48,4 +66,8 @@
     ::-webkit-scrollbar {
         -webkit-appearance: none !important;
     }
+}
+.hover:hover{
+    background-color: #e8eaed;
+    cursor: pointer;
 }

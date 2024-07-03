@@ -2,7 +2,7 @@
 
 Google drive clone
 
-Link: https://dr1vee.web.app/
+Link: https://dr1vee.firebaseapp.com/
 
 To run locally :
 Clone the repo into your local drive

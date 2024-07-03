@@ -9,5 +9,21 @@
     "frameworksBackend": {
       "region": "asia-east1"
     }
+  },
+  "functions": [
+    {
+      "source": "newsignup",
+      "codebase": "newsignup",
+      "ignore": [
+        "node_modules",
+        ".git",
+        "firebase-debug.log",
+        "firebase-debug.*.log"
+      ]
+    }
+  ],
+  "firestore": {
+    "rules": "firestore.rules",
+    "indexes": "firestore.indexes.json"
   }
 }
