@@ -56,7 +56,7 @@ export default (props) => {
               <img
                 jsaction=""
                 className=" p-3"
-                src={getFileType(file).url}
+                src={getFileType(file.name).url}
                 alt=""
               ></img>
             </div>

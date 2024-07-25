@@ -1,5 +1,4 @@
-import React, { useRef, useState } from "react";
-import { getStorage } from "firebase/storage";
+import React, { useRef } from "react";
 import ModalNewfolder from "./ModalNewfolder";
 import SVG from "../SVG";
 import usePath from "../../context/PathContext";
@@ -7,20 +6,20 @@ import uploadFolder from "../functions/uploadFolder";
 import uploadFile from "../functions/uploadFile";
 import { v4 as uuidv4 } from "uuid";
 import { useNavigate } from "react-router-dom";
-
+import useProgress from "../../context/ProgressContext";
 export default () => {
   const inputFile = useRef(null);
   const inputFolder = useRef(null);
-  const storage = getStorage();
   const navigate = useNavigate();
-  const { path, folderID, setSize, myDriveId } = usePath();
+  const { setUploads } = useProgress();
+  const { path, folderID, myDriveId } = usePath();
   var uploadPath;
   var uploadFolderId;
   if (path[0] && path[0].id == "my-drive") {
     uploadFolderId = folderID;
     uploadPath = path;
   } else {
-    uploadPath = [{ id: "my-drive", name: "My drive" }];
+    uploadPath = [{ id: "my-drive", name: "My Drive" }];
     uploadFolderId = myDriveId;
   }
   return (
@@ -89,7 +88,7 @@ export default () => {
                     uuidv4(),
                     uploadFolderId,
                     uploadPath,
-                    setSize
+                    setUploads
                   );
                 event.target.value = "";
               }}
@@ -122,10 +121,10 @@ export default () => {
                     event.target.files,
                     uploadFolderId,
                     uploadPath,
-                    setSize
+                    setUploads
                   );
                 event.target.value = null;
-                // if (path[0] && path[0].id != "my-drive") navigate("/my-drive");
+                if (path[0] && path[0].id != "my-drive") navigate("/my-drive");
               }}
             />
           </li>

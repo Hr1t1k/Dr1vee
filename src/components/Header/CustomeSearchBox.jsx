@@ -34,7 +34,7 @@ export default function CustomSearchBox({
         if (inputRef.current) {
           inputRef.current.blur();
         }
-        if (inputValue.trim() !== "") navigate(`/search/${inputValue}`);
+        if (inputValue.trim() !== "") navigate(`/drive/search/${inputValue}`);
       }}
       onReset={(event) => {
         event.preventDefault();

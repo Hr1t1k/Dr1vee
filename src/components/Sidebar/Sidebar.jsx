@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { NavLink, Navigate, useNavigate } from "react-router-dom";
 import "./sidebar.css";
 import CompanyLogo from "../Header/CompanyLogo";
@@ -13,21 +13,24 @@ import {
   sum,
   where,
 } from "firebase/firestore";
+import useAuth from "../../context/UserContext";
 export default () => {
-  const { size, setSize } = usePath();
+  const { size, setSize, uid } = usePath();
   const navigate = useNavigate();
+  const { authLoaded } = useAuth();
   useEffect(() => {
-    const q = query(
-      collection(db, "Files"),
-      where("owner", "==", auth.currentUser.uid)
-    );
-
-    getAggregateFromServer(q, {
-      totalsize: sum("filesize"),
-    }).then((val) => {
-      setSize(val.data().totalsize);
-    });
-  }, []);
+    if (authLoaded) {
+      const q = query(
+        collection(db, "Files"),
+        where("owner", "==", auth.currentUser.uid)
+      );
+      getAggregateFromServer(q, {
+        totalsize: sum("filesize"),
+      }).then((val) => {
+        setSize(val.data().totalsize);
+      });
+    }
+  }, [authLoaded]);
   return (
     <>
       <div className="sidebar overflow-x-hidden">
@@ -65,10 +68,10 @@ export default () => {
                     isTransitioning ? "transitioning" : "",
                   ].join(" ")
                 }
-                to="/my-drive"
+                to="/drive/my-drive"
                 onClick={(e) => {
                   e.preventDefault();
-                  navigate("/my-drive");
+                  navigate("/drive/my-drive");
                 }}
                 data-bs-target="#sidebarMenu"
                 data-bs-dismiss="offcanvas"
@@ -100,10 +103,10 @@ export default () => {
                     isTransitioning ? "transitioning" : "",
                   ].join(" ")
                 }
-                to="/shared-drives"
+                to="/drive/shared-drives"
                 onClick={(e) => {
                   e.preventDefault();
-                  navigate("/shared-drives");
+                  navigate("/drive/shared-drives");
                 }}
                 data-bs-target="#sidebarMenu"
                 data-bs-dismiss="offcanvas"
@@ -143,10 +146,10 @@ export default () => {
                     isTransitioning ? "transitioning" : "",
                   ].join(" ")
                 }
-                to="/computers"
+                to="/drive/computers"
                 onClick={(e) => {
                   e.preventDefault();
-                  navigate("/computers");
+                  navigate("/drive/computers");
                 }}
                 data-bs-target="#sidebarMenu"
                 data-bs-dismiss="offcanvas"
@@ -179,10 +182,10 @@ export default () => {
                     isTransitioning ? "transitioning" : "",
                   ].join(" ")
                 }
-                to="/shared-with-me"
+                to="/drive/shared-with-me"
                 onClick={(e) => {
                   e.preventDefault();
-                  navigate("/shared-with-me");
+                  navigate("/drive/shared-with-me");
                 }}
                 data-bs-target="#sidebarMenu"
                 data-bs-dismiss="offcanvas"
@@ -220,10 +223,10 @@ export default () => {
                     isTransitioning ? "transitioning" : "",
                   ].join(" ")
                 }
-                to="/recent"
+                to="/drive/recent"
                 onClick={(e) => {
                   e.preventDefault();
-                  navigate("/recent");
+                  navigate("/drive/recent");
                 }}
                 data-bs-target="#sidebarMenu"
                 data-bs-dismiss="offcanvas"
@@ -260,10 +263,10 @@ export default () => {
                     isTransitioning ? "transitioning" : "",
                   ].join(" ")
                 }
-                to="/starred"
+                to="/drive/starred"
                 onClick={(e) => {
                   e.preventDefault();
-                  navigate("/starred");
+                  navigate("/drive/starred");
                 }}
                 data-bs-target="#sidebarMenu"
                 data-bs-dismiss="offcanvas"
@@ -296,10 +299,10 @@ export default () => {
                     isTransitioning ? "transitioning" : "",
                   ].join(" ")
                 }
-                to="/spam"
+                to="/drive/spam"
                 onClick={(e) => {
                   e.preventDefault();
-                  navigate("/spam");
+                  navigate("/drive/spam");
                 }}
                 data-bs-target="#sidebarMenu"
                 data-bs-dismiss="offcanvas"
@@ -335,10 +338,10 @@ export default () => {
                     isTransitioning ? "transitioning" : "",
                   ].join(" ")
                 }
-                to="/trash"
+                to="/drive/trash"
                 onClick={(e) => {
                   e.preventDefault();
-                  navigate("/trash");
+                  navigate("/drive/trash");
                 }}
                 data-bs-target="#sidebarMenu"
                 data-bs-dismiss="offcanvas"
@@ -374,10 +377,10 @@ export default () => {
                     isTransitioning ? "transitioning" : "",
                   ].join(" ")
                 }
-                to="/storage"
+                to="/drive/storage"
                 onClick={(e) => {
                   e.preventDefault();
-                  navigate("/storage");
+                  navigate("/drive/storage");
                 }}
                 data-bs-target="#sidebarMenu"
                 data-bs-dismiss="offcanvas"
@@ -418,7 +421,7 @@ export default () => {
                   className="btn btn-outline-dark ms-2 px-4 rounded-5 mt-2 storageBtn"
                   onClick={(e) => {
                     e.preventDefault();
-                    navigate("/my-drive");
+                    navigate("/drive/my-drive");
                   }}
                   data-bs-target="#sidebarMenu"
                   data-bs-dismiss="offcanvas"

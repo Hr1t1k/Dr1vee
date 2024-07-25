@@ -1,9 +1,7 @@
 import React, { useState } from "react";
-import usePath from "../../context/PathContext";
-import renameFile from "../functions/renameFile";
+import rename from "../functions/rename";
 export default (props) => {
   const [folderName, setFolderName] = useState("");
-  const { path, folderID } = usePath();
   return (
     <>
       <div
@@ -39,7 +37,7 @@ export default (props) => {
                   onClick={(event) => {
                     event.preventDefault();
                     event.stopPropagation();
-                    renameFile(props.file, folderName);
+                    rename(props.file.id, folderName, 1);
                     setFolderName("");
                   }}
                   data-bs-dismiss="modal"

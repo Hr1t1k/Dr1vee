@@ -1,9 +1,9 @@
 import { createContext, useContext } from "react";
-export const UserContext = createContext({
-  uid: null,
-  setUser: () => {},
+export const AuthContext = createContext({
+  authLoaded: null,
+  setAuthLoaded: () => {},
 });
-export const UserProvider = UserContext.Provider;
-export default function useTask() {
-  return useContext(UserContext);
+export const UserProvider = AuthContext.Provider;
+export default function useAuth() {
+  return useContext(AuthContext);
 }

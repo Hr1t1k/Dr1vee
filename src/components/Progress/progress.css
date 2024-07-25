@@ -1,0 +1,29 @@
+/* App.css */
+.floating-button {
+    position: fixed !important;
+    bottom: 20px;
+    right: 20px;
+    background-color: white;
+    border-radius: 50%;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.dialog-title-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.dialog-actions {
+    display: flex;
+    align-items: center;
+}
+
+.close-button,
+.minimize-button {
+    margin-left: 8px;
+}
+
+.MuiDialog-paper {
+    border-radius: 10px;
+}

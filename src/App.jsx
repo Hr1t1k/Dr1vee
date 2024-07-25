@@ -1,79 +1,106 @@
-import HeaderDrive from "./components/Header/HeaderDrive";
-import Sidebar from "./components/Sidebar/Sidebar";
 import "./App.css";
-import { Outlet, useLocation, useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
-import { LayoutProvider } from "./context/LayoutContext";
+import {
+  RouterProvider,
+  createBrowserRouter,
+  useParams,
+} from "react-router-dom";
+import { Suspense, lazy, useEffect, useState } from "react";
 import { onAuthStateChanged } from "firebase/auth";
 import auth from "../firebasecofig";
-import GoogleSignin from "./components/GoogleSignin";
-import { PathProvider } from "./context/PathContext";
-
+import { Loading } from "./components/Loading.jsx";
+import Home from "./components/Home.jsx";
+const PublicRoute = lazy(() => import("./components/PublicRoute.jsx"));
+// const ProtectedRoute = lazy(() => import("./components/ProtectedRoute.jsx"));
+const Error = lazy(() => import("./components/Error.jsx"));
+// const Drive = lazy(() => import("./components/Drive.jsx"));
+// const Content = lazy(() => import("./components/Content/Content.jsx"));
+import ProtectedRoute from "./components/ProtectedRoute.jsx";
+import Drive from "./components/Drive.jsx";
+import Content from "./components/Content/Content.jsx";
+import usePath from "./context/PathContext.js";
+import { UserProvider } from "./context/UserContext.js";
+import FileContent from "./components/Content/FileContent.jsx";
+const Register = lazy(() => import("./components/Auth/Register.jsx"));
+const Login = lazy(() => import("./components/Auth/Login.jsx"));
+const ForgetPassword = lazy(() =>
+  import("./components/Auth/ForgetPassword.jsx")
+);
 function App() {
-  const [path, setPath] = useState([]);
-  const [loaded, setLoaded] = useState(false);
-  const [folderID, setFolderID] = useState(null);
-  const navigate = useNavigate();
-  const [size, setSize] = useState(0);
-  const [myDriveId, setMyDriveId] = useState(null);
-  const location = useLocation();
-  const [grid, setGrid] = useState(
-    window.localStorage.getItem("grid") === "false" ? false : true
-  );
+  const [loaded, setLoaded] = useState(true);
+  const [authLoaded, setAuthLoaded] = useState(false);
+  const router = createBrowserRouter([
+    {
+      path: "/",
+      element: <Home />,
+    },
+    {
+      element: <PublicRoute />,
+      errorElement: <Error />,
+      children: [
+        {
+          path: "/login",
+          element: <Login />,
+        },
+        {
+          path: "/register",
+          element: <Register />,
+        },
+        {
+          path: "/resetpassword",
+          element: <ForgetPassword />,
+        },
+      ],
+    },
+    {
+      element: <ProtectedRoute />,
+      errorElement: <Error />,
+      children: [
+        {
+          path: "drive",
+          element: <Drive />,
+          errorElement: <Error />,
+          children: [
+            {
+              path: "/drive/:name",
+              element: <Content />,
+              errorElement: <Error />,
+            },
+            {
+              path: "/drive/search/:search",
+              element: <Content />,
+            },
+            {
+              path: "/drive/folders/:folderId",
+              element: <Content />,
+              // errorElement: <Error />,
+            },
+            {
+              path: "/drive/files/:fileId",
+              element: <FileContent />,
+            },
+          ],
+        },
+      ],
+    },
+  ]);
   useEffect(() => {
-    console.log("start", new Date().getTime());
-    onAuthStateChanged(auth, async (user) => {
+    onAuthStateChanged(auth, (user) => {
       if (user) {
-        console.log("end", new Date().getTime());
-        if (location.pathname == "/") navigate("/my-drive");
-        setLoaded(true);
+        setAuthLoaded(true);
+        localStorage.setItem("signedIn", true);
       } else {
-        setLoaded(false);
-        GoogleSignin();
+        localStorage.removeItem("signedIn");
       }
     });
   }, []);
 
   return (
     <>
-      {loaded ? (
-        <div className="p-0 body">
-          <HeaderDrive />
-
-          <div className="d-inline-flex w-100">
-            <PathProvider
-              value={{
-                path,
-                setPath,
-                folderID,
-                setFolderID,
-                size,
-                setSize,
-                myDriveId,
-                setMyDriveId,
-              }}
-            >
-              <Sidebar />
-              <LayoutProvider value={{ grid, setGrid }}>
-                <Outlet />
-              </LayoutProvider>
-            </PathProvider>
-          </div>
-        </div>
-      ) : (
-        <div
-          className="d-flex align-items-center justify-content-center"
-          style={{ height: "100vh" }}
-        >
-          <div
-            class="spinner-border"
-            style={{ width: "3rem", height: "3rem" }}
-            role="status"
-          >
-            <span class="visually-hidden">Loading...</span>
-          </div>
-        </div>
-      )}
+      <Suspense fallback={<Loading />}>
+        <UserProvider value={{ authLoaded }}>
+          <RouterProvider router={router} />
+        </UserProvider>
+      </Suspense>
     </>
   );
 }

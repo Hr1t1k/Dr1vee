@@ -1,9 +1,19 @@
-import { onAuthStateChanged, signOut } from "firebase/auth";
+import { signOut } from "firebase/auth";
 import auth from "../../../firebasecofig";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import useAuth from "../../context/UserContext";
 export default () => {
   const navigate = useNavigate();
+  const { authLoaded } = useAuth();
+  const [email, setEmail] = useState("");
+  const [photoURL, setPhotoURL] = useState("");
+  useEffect(() => {
+    if (authLoaded) {
+      setEmail(auth.currentUser.email);
+      setPhotoURL(auth.currentUser.photoURL);
+    }
+  }, [authLoaded]);
   return (
     <div className="flex-shrink-0 dropdown me-2">
       <a
@@ -14,7 +24,7 @@ export default () => {
       >
         <>
           <img
-            src={auth.currentUser.photoURL}
+            src={photoURL}
             alt="mdo"
             width="32"
             height="32"
@@ -23,6 +33,11 @@ export default () => {
         </>
       </a>
       <ul className="dropdown-menu text-small shadow">
+        <li>
+          <a className="dropdown-item" href="#">
+            {email}
+          </a>
+        </li>
         <li>
           <a className="dropdown-item" href="#">
             Settings
@@ -43,6 +58,7 @@ export default () => {
               signOut(auth).then(() => {
                 localStorage.removeItem("uid");
                 localStorage.removeItem("email");
+                navigate("/login");
               });
             }}
           >

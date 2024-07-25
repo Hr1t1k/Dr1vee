@@ -17,7 +17,7 @@ export default (props) => {
         onClick={() =>
           params.name && params.name == "trash"
             ? ""
-            : navigate(`/folders/${folder.id}`)
+            : navigate(`/drive/folders/${folder.id}`)
         }
         className={`${
           grid ? "d-grid rounded-3 folder-box" : "list-header d-grid"

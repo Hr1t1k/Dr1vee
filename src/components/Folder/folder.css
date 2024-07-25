@@ -1,12 +1,12 @@
 .folder-box{
     height: 48px !important;
     max-height: 48px !important;
-    background-color:rgb(242, 246, 252);
+    background-color:rgb(242, 246, 252)!important;
     
 }
 
 .folder-box:hover{
-    background-color: #e8eaed;
+    background-color: #e8eaed !important;
 }
 .three-dots{
     border-radius: 50% !important;

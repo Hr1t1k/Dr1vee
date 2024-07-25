@@ -9,7 +9,7 @@ import {
 } from "react-instantsearch";
 import auth from "../../../firebasecofig";
 import CustomSearchBox from "./CustomeSearchBox";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import getFileType from "../functions/getFileType";
 
@@ -26,7 +26,10 @@ export default () => {
   const [visible, setVisible] = useState(false);
   const navigate = useNavigate();
   const [focused, setFocused] = useState(false);
-  const currentUser = auth.currentUser.uid;
+  const [currentUser, setCurrentUser] = useState(auth.currentUser?.uid);
+  useEffect(() => {
+    if (auth.currentUser) setCurrentUser(auth.currentUser.uid);
+  }, [auth.currentUser]);
   return (
     <div
       className="search-bar d-flex w-100 h-5 input-group input-group-lg "
@@ -71,7 +74,7 @@ export default () => {
                 <div
                   className="search-items d-flex  align-items-center"
                   style={{ height: "40px" }}
-                  onMouseDown={() => navigate(`/folders/${hit.id}`)}
+                  onMouseDown={() => navigate(`/drive/folders/${hit.id}`)}
                 >
                   <svg
                     height="24px"

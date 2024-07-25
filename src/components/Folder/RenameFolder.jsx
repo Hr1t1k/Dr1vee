@@ -1,9 +1,9 @@
 import React, { useState } from "react";
-import usePath from "../../context/PathContext";
-import renameFolder from "../functions/renameFolder";
+
+import renameFolder from "../functions/rename";
+import rename from "../functions/rename";
 function ModalNewfolder(props) {
   const [folderName, setFolderName] = useState("");
-  const { path, folderID } = usePath();
   return (
     <>
       <div
@@ -39,7 +39,7 @@ function ModalNewfolder(props) {
                   onClick={(event) => {
                     event.preventDefault();
                     event.stopPropagation();
-                    renameFolder(props.folder, folderName);
+                    rename(props.folder.id, folderName, 0);
                     setFolderName("");
                   }}
                   data-bs-dismiss="modal"

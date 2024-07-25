@@ -1,75 +1,63 @@
 import {
   getDownloadURL,
-  listAll,
   ref,
   uploadBytesResumable,
-  uploadString,
   getStorage,
 } from "firebase/storage";
-import {
-  collection,
-  updateDoc,
-  addDoc,
-  doc,
-  arrayUnion,
-  FieldPath,
-  arrayRemove,
-} from "firebase/firestore";
+import { doc, setDoc } from "firebase/firestore";
 import auth, { db } from "../../../firebasecofig";
-
-const uploadFile = (file, fileId, parentId, path, setSize) => {
+import { v4 } from "uuid";
+import getFileType from "./getFileType";
+const uploadFile = (file, fileId, parentId, path, setUploads) => {
   const fileName = file.name;
   const storage = getStorage();
 
-  const filePath = localStorage.getItem("uid") + "/" + fileId + "/" + file.name;
+  const filePath = fileId + "/" + file.name;
   const fileRef = ref(storage, filePath);
   const uploadTask = uploadBytesResumable(fileRef, file);
-  // Listen for state changes, errors, and completion of the upload.
+  setUploads((prevUploads) => ({
+    ...prevUploads,
+    [fileId]: { task: uploadTask, status: "running", progress: 0 },
+  }));
   uploadTask.on(
     "state_changed",
     (snapshot) => {
-      // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
-      const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-      console.log("Upload is " + progress + "% done");
-      switch (snapshot.state) {
-        case "paused":
-          console.log("Upload is paused");
-          break;
-        case "running":
-          console.log("Upload is running");
-          break;
-      }
+      setUploads((prevUploads) => ({
+        ...prevUploads,
+        [fileId]: {
+          name: file.name,
+          progress: (snapshot.bytesTransferred / snapshot.totalBytes) * 100,
+          status: snapshot.state,
+          task: uploadTask,
+        },
+      }));
     },
     (error) => {
-      // A full list of error codes is available at
-      // https://firebase.google.com/docs/storage/web/handle-errors
       switch (error.code) {
         case "storage/unauthorized":
-          // User doesn't have permission to access the object
           console.log("user unauth");
           break;
         case "storage/canceled":
-          // User canceled the upload
-          console.log("upload file cancelled");
+          setUploads((prevUploads) => ({
+            ...prevUploads,
+            [fileId]: {
+              name: file.name,
+              status: "Cancelled",
+            },
+          }));
           break;
-
-        // ...
-
         case "storage/unknown":
-          // Unknown error occurred, inspect error.serverResponse
           console.log("unkown upload file error");
           break;
       }
     },
     () => {
-      // Upload completed successfully, now we can get the download URL
-      setSize((size) => size + file.size);
       getDownloadURL(uploadTask.snapshot.ref).then(async (downloadURL) => {
-        console.log("File available at", downloadURL);
         const date = new Date().now;
-
-        const docRef = await addDoc(collection(db, "Files"), {
+        const newId = v4();
+        const docRef = await setDoc(doc(db, "Files", newId), {
           name: fileName,
+          id: newId,
           filePath: filePath,
           owner: auth.currentUser.uid,
           ownerName: auth.currentUser.displayName,
@@ -79,23 +67,27 @@ const uploadFile = (file, fileId, parentId, path, setSize) => {
           downloadURL: downloadURL,
           parent: parentId,
           path: path,
+          type: getFileType(fileName).fileExtension,
           filesize: file.size,
           deleted: false,
+          rootDeleted: false,
+          starred: false,
           lastModifiedDate: new Date(Date.now()).toLocaleDateString("en-US", {
             year: "numeric",
             month: "short",
             day: "numeric",
           }),
         });
-        updateDoc(doc(db, "Files", docRef.id), {
-          id: docRef.id,
-        });
-        await updateDoc(doc(db, "Folders", parentId), {
-          files: arrayUnion({
-            id: docRef.id,
-          }),
-        });
       });
+      setUploads((prevUploads) => ({
+        ...prevUploads,
+        [fileId]: {
+          name: file.name,
+          progress: 100,
+          status: "completed",
+          task: uploadTask,
+        },
+      }));
     }
   );
 };

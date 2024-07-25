@@ -1,20 +1,25 @@
 import React from "react";
 import { useParams } from "react-router-dom";
-import { folderDelete } from "./functions/folderDelete";
-import { fileDelete } from "./functions/fileDelete";
+import fileDelete from "./functions/fileDelete";
 import { downloadFile } from "./functions/downloadFile";
-import usePath from "../context/PathContext";
 import SVG from "./SVG";
-import folderRestore from "./functions/restoreFolder";
-import fileRestore from "./functions/restoreFile";
-import folderDelPerm from "./functions/folderDelPerm";
-import fileDelPerm from "./functions/fileDelPerm";
-
+import addStarred from "./functions/addStarred";
+import restore from "./functions/restore";
+import deletePerm from "./functions/deletePerm";
+import usePath from "../context/PathContext";
+import downloadFolder from "./functions/downloadFolder";
+import { toast } from "react-toastify";
+import ShareBtn from "./ShareBtn/ShareBtn";
 export default (props) => {
   const params = useParams();
-  const { setSize, folderID } = usePath();
   const folder = props.folder;
   const file = props.file;
+
+  const id = file ? file.id : folder.id;
+  const name = file ? file.name : folder.name;
+  const sharedWith = file ? file.sharedWith : folder.sharedWith;
+  const { myDriveId } = usePath();
+  const type = file ? 1 : 0;
   return (
     <>
       <div
@@ -37,17 +42,19 @@ export default (props) => {
         </svg>
       </div>
 
-      <ul className="dropdown-menu">
+      <ul
+        className="dropdown-menu"
+        onClick={(event) => {
+          event.stopPropagation();
+        }}
+      >
         {params.name && params.name == "trash" && (
           <>
             <li>
-              <a
+              <button
                 className="dropdown-item d-flex align-items-center gap-3"
                 onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  if (folder) folderRestore(folder);
-                  if (file) fileRestore(file);
+                  restore(id, type, file ? file : folder, myDriveId);
                 }}
               >
                 <SVG
@@ -56,16 +63,13 @@ export default (props) => {
                   ]}
                 />
                 Restore
-              </a>
+              </button>
             </li>
             <li>
-              <a
+              <button
                 className="dropdown-item d-flex align-items-center gap-3"
-                onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  if (folder) folderDelPerm(folder);
-                  if (file) fileDelPerm(file, setSize);
+                onClick={() => {
+                  deletePerm(id, type);
                 }}
               >
                 <svg
@@ -80,16 +84,21 @@ export default (props) => {
                   <path d="M15 4V3H9v1H4v2h1v13c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V6h1V4h-5zm2 15H7V6h10v13zM9 8h2v9H9zm4 0h2v9h-2z"></path>
                 </svg>
                 Delete forever
-              </a>
+              </button>
             </li>
           </>
         )}
         {!(params.name && params.name == "trash") && (
           <>
             <li>
-              <a
+              <button
                 className="dropdown-item d-flex align-items-center gap-3"
-                onClick={() => downloadFile(props.file)}
+                onClick={() => {
+                  file
+                    ? downloadFile(file.downloadURL, file.name)
+                    : downloadFolder(id);
+                  toast.info("Starting download", { theme: "colored" });
+                }}
               >
                 <SVG
                   path={[
@@ -97,11 +106,10 @@ export default (props) => {
                   ]}
                 />
                 Download
-              </a>
+              </button>
             </li>
             <li>
               <div
-                onClick={(event) => event.stopPropagation()}
                 className="dropdown-item d-flex align-items-center gap-3"
                 data-bs-toggle="modal"
                 data-bs-target={folder ? "#renameFolder" : "#renameFile"}
@@ -125,29 +133,45 @@ export default (props) => {
             </li>
 
             <li>
-              <a
-                className="dropdown-item d-flex align-items-center gap-3"
-                href="#"
-              >
-                <SVG
-                  path={[
-                    "M9 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0-6c1.1 0 2 .9 2 2s-.9 2-2 2-2-.9-2-2 .9-2 2-2zm0 7c-2.67 0-8 1.34-8 4v3h16v-3c0-2.66-5.33-4-8-4zm6 5H3v-.99C3.2 16.29 6.3 15 9 15s5.8 1.29 6 2v1zm3-4v-3h-3V9h3V6h2v3h3v2h-3v3h-2z",
-                  ]}
-                />
-                Share
-              </a>
+              <ShareBtn
+                sharedWith={file ? file.sharedWith : folder.sharedWith}
+                id={id}
+                type={type}
+                name={name}
+              />
             </li>
             <li>
               <hr className="dropdown-divider" />
             </li>
-
             <li>
-              <a
+              <button
                 className="dropdown-item d-flex align-items-center gap-3"
-                onClick={(event) => {
-                  event.stopPropagation();
-                  if (props.folder) folderDelete(props.folder, folderID);
-                  if (props.file) fileDelete(props.file, folderID);
+                onClick={() => {
+                  addStarred(id, type, type ? file.starred : folder.starred);
+                }}
+              >
+                <svg
+                  className=" c-qd"
+                  width="24px"
+                  height="24px"
+                  viewBox="0 0 24 24"
+                  focusable="false"
+                  fill="currentColor"
+                >
+                  <path d="M0 0h24v24H0z" fill="none"></path>
+                  <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"></path>
+                  <path d="M0 0h24v24H0z" fill="none"></path>
+                </svg>
+                {(folder && folder.starred) || (file && file.starred)
+                  ? "Remove from starred"
+                  : "Add to starred"}
+              </button>
+            </li>
+            <li>
+              <button
+                className="dropdown-item d-flex align-items-center gap-3"
+                onClick={() => {
+                  fileDelete(id, type);
                 }}
               >
                 <svg
@@ -162,7 +186,7 @@ export default (props) => {
                   <path d="M15 4V3H9v1H4v2h1v13c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V6h1V4h-5zm2 15H7V6h10v13zM9 8h2v9H9zm4 0h2v9h-2z"></path>
                 </svg>
                 Move to trash
-              </a>
+              </button>
             </li>
           </>
         )}

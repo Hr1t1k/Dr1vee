@@ -20,6 +20,7 @@ import ModalNewfolder from "./ModalNewfolder";
 import SVG from "../SVG";
 import usePath from "../../context/PathContext";
 import UploadFolder from "../Upload folder";
+import getFileType from "../functions/getFileType";
 
 const uploadFile = (event) => {
   const inputFile = useRef(null);
@@ -83,6 +84,7 @@ const uploadFile = (event) => {
           shared: [],
           visibility: false,
           downloadURL: downloadURL,
+          type: getFileType(fileName).fileExtension,
         });
 
         await updateDoc(doc(db, "Folders", folderID), {

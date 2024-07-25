@@ -5,10 +5,12 @@ import {
   addDoc,
   doc,
   arrayUnion,
+  setDoc,
 } from "firebase/firestore";
 import usePath from "../../context/PathContext";
 import auth, { db } from "../../../firebasecofig";
 import { useNavigate } from "react-router-dom";
+import { v4 } from "uuid";
 function ModalNewfolder(props) {
   const [folderName, setFolderName] = useState("");
   const { path, folderID, setSize, myDriveId } = usePath();
@@ -55,15 +57,22 @@ function ModalNewfolder(props) {
                 type="button"
                 className="btn text-primary"
                 onClick={async () => {
-                  const docRef = await addDoc(collection(db, "Folders"), {
+                  const newId = v4();
+                  var currPath = [
+                    ...uploadPath,
+                    { id: newId, name: folderName },
+                  ];
+                  console.log(newId);
+                  console.log(currPath);
+                  const docRef = await setDoc(doc(db, "Folders", newId), {
                     name: folderName,
-
-                    folders: [],
-                    files: [],
+                    id: newId,
                     owner: auth.currentUser.uid,
                     ownerName: auth.currentUser.displayName,
                     ownerPic: auth.currentUser.photoURL,
+                    starred: false,
                     deleted: false,
+                    rootDeleted: false,
                     createdat: new Date(),
                     lastModifiedDate: new Date(Date.now()).toLocaleDateString(
                       "en-US",
@@ -76,14 +85,7 @@ function ModalNewfolder(props) {
                     shared: [],
                     visibility: false,
                     parent: uploadFolderId,
-                  });
-                  var currPath = [...uploadPath, docRef.id];
-                  await updateDoc(doc(db, "Folders", docRef.id), {
                     path: currPath,
-                    id: docRef.id,
-                  });
-                  await updateDoc(doc(db, "Folders", uploadFolderId), {
-                    folders: arrayUnion(docRef.id),
                   });
                   setFolderName("");
                   if (path[0] && path[0].id != "my-drive")

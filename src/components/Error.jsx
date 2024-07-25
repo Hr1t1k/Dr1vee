@@ -3,10 +3,10 @@ import React from "react";
 const Error = () => {
   return (
     <div
-      className="d-flex align-items-center justify-content-center flex-wrap mt-5 gap-5"
+      className="d-flex align-items-center justify-content-center flex-wrap mt-5 gap-5 m-1"
       style={{ height: "50vh" }}
     >
-      <div className="" style={{ minWidth: "400px" }}>
+      <div className="">
         <h1>Drive</h1>
         <p>
           <span className="fw-bold">404.</span> That’s an error.
