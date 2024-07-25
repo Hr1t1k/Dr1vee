@@ -28,8 +28,8 @@ export default (props) => {
               <img
                 className=" m-3 mx-2 m-md-3    p-0 "
                 width={18}
-                src={getFileType(file).url}
-                alt={getFileType(file).type}
+                src={getFileType(file.name).url}
+                alt={getFileType(file.name).type}
                 height={18}
               ></img>
               <p className="p-0 m-0">{file.name}</p>

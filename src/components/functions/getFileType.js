@@ -1,4 +1,5 @@
 export default (name) => {
+  console.log(name);
   const fileExtension = name.split(".").pop().toLowerCase();
 
   switch (fileExtension) {

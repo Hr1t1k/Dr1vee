@@ -110,8 +110,8 @@ export default () => {
                     <img
                       className=" m-3 mx-2 m-md-3    p-0 "
                       width={18}
-                      src={getFileType(hit).url}
-                      alt={getFileType(hit).type}
+                      src={getFileType(hit.name).url}
+                      alt={getFileType(hit.name).type}
                       height={18}
                     ></img>
                     <p className="">
